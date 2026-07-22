@@ -15,12 +15,97 @@ export type HomepageStatItem = {
   value: string;
 };
 
+export type HomepageCardItem = {
+  title: string;
+  description: string;
+  href?: string | null;
+  meta?: string | null;
+};
+
 export type HomepageBrandStatsModule = {
   key: "brand-stats";
   items: HomepageStatItem[];
 };
 
-export type HomepageModule = HomepageHeroVideoModule | HomepageBrandStatsModule;
+export type HomepageCompanyIntroModule = {
+  key: "company-intro";
+  eyebrow?: string | null;
+  title: string;
+  description: string;
+  highlights?: HomepageStatItem[];
+};
+
+export type HomepageProductCategoriesModule = {
+  key: "product-categories";
+  eyebrow?: string | null;
+  title: string;
+  description: string;
+  items: HomepageCardItem[];
+};
+
+export type HomepageIndustrySolutionsModule = {
+  key: "industry-solutions";
+  eyebrow?: string | null;
+  title: string;
+  description: string;
+  items: HomepageCardItem[];
+};
+
+export type HomepageProjectShowcaseModule = {
+  key: "project-showcase";
+  eyebrow?: string | null;
+  title: string;
+  description: string;
+  items: HomepageCardItem[];
+};
+
+export type HomepageCertificatesExportModule = {
+  key: "certificates-export";
+  eyebrow?: string | null;
+  title: string;
+  description: string;
+  items: string[];
+  primaryCta?: string | null;
+};
+
+export type HomepageFeaturedVideoModule = {
+  key: "featured-video";
+  eyebrow?: string | null;
+  title: string;
+  description: string;
+  videoUrl?: string | null;
+  posterUrl?: string | null;
+  primaryCta?: string | null;
+};
+
+export type HomepageLatestNewsModule = {
+  key: "latest-news";
+  eyebrow?: string | null;
+  title: string;
+  description: string;
+  items: HomepageCardItem[];
+};
+
+export type HomepageContactCtaModule = {
+  key: "contact-cta";
+  eyebrow?: string | null;
+  title: string;
+  description: string;
+  primaryCta?: string | null;
+  secondaryCta?: string | null;
+};
+
+export type HomepageModule =
+  | HomepageHeroVideoModule
+  | HomepageBrandStatsModule
+  | HomepageCompanyIntroModule
+  | HomepageProductCategoriesModule
+  | HomepageIndustrySolutionsModule
+  | HomepageProjectShowcaseModule
+  | HomepageCertificatesExportModule
+  | HomepageFeaturedVideoModule
+  | HomepageLatestNewsModule
+  | HomepageContactCtaModule;
 
 export type HomepageConfig = {
   title: string;
@@ -46,6 +131,58 @@ export type HomepageViewModel = {
     posterUrl?: string;
   };
   stats: HomepageStatItem[];
+  companyIntro: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    highlights: HomepageStatItem[];
+  };
+  productCategories: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: HomepageCardItem[];
+  };
+  industrySolutions: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: HomepageCardItem[];
+  };
+  projectShowcase: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: HomepageCardItem[];
+  };
+  certificatesExport: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: string[];
+    primaryCta: string;
+  };
+  featuredVideo: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    videoUrl?: string;
+    posterUrl?: string;
+    primaryCta: string;
+  };
+  latestNews: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    items: HomepageCardItem[];
+  };
+  contactCta: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+  };
 };
 
 export type StrapiV4Entity<T> = {

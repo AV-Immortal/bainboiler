@@ -1,9 +1,18 @@
 import type {
   CmsLocale,
+  HomepageCardItem,
   HomepageBrandStatsModule,
+  HomepageCertificatesExportModule,
+  HomepageCompanyIntroModule,
+  HomepageContactCtaModule,
   HomepageConfig,
+  HomepageFeaturedVideoModule,
   HomepageHeroVideoModule,
+  HomepageIndustrySolutionsModule,
+  HomepageLatestNewsModule,
   HomepageModule,
+  HomepageProductCategoriesModule,
+  HomepageProjectShowcaseModule,
   HomepageStatItem,
   PageConfigRecord,
   StrapiCollectionResponse,
@@ -25,6 +34,16 @@ function isStatItem(value: unknown): value is HomepageStatItem {
   );
 }
 
+function isCardItem(value: unknown): value is HomepageCardItem {
+  return (
+    isRecord(value) &&
+    typeof value.title === "string" &&
+    typeof value.description === "string" &&
+    (typeof value.href === "string" || typeof value.href === "undefined") &&
+    (typeof value.meta === "string" || typeof value.meta === "undefined")
+  );
+}
+
 function isHeroModule(value: unknown): value is HomepageHeroVideoModule {
   return (
     isRecord(value) &&
@@ -40,6 +59,85 @@ function isStatsModule(value: unknown): value is HomepageBrandStatsModule {
     value.key === "brand-stats" &&
     Array.isArray(value.items) &&
     value.items.every(isStatItem)
+  );
+}
+
+function isCompanyIntroModule(value: unknown): value is HomepageCompanyIntroModule {
+  return (
+    isRecord(value) &&
+    value.key === "company-intro" &&
+    typeof value.title === "string" &&
+    typeof value.description === "string" &&
+    (typeof value.eyebrow === "string" || typeof value.eyebrow === "undefined") &&
+    (typeof value.highlights === "undefined" ||
+      (Array.isArray(value.highlights) && value.highlights.every(isStatItem)))
+  );
+}
+
+function isCardListModule(
+  value: unknown,
+  key:
+    | "product-categories"
+    | "industry-solutions"
+    | "project-showcase"
+    | "latest-news",
+): value is
+  | HomepageProductCategoriesModule
+  | HomepageIndustrySolutionsModule
+  | HomepageProjectShowcaseModule
+  | HomepageLatestNewsModule {
+  return (
+    isRecord(value) &&
+    value.key === key &&
+    typeof value.title === "string" &&
+    typeof value.description === "string" &&
+    Array.isArray(value.items) &&
+    value.items.every(isCardItem) &&
+    (typeof value.eyebrow === "string" || typeof value.eyebrow === "undefined")
+  );
+}
+
+function isCertificatesExportModule(
+  value: unknown,
+): value is HomepageCertificatesExportModule {
+  return (
+    isRecord(value) &&
+    value.key === "certificates-export" &&
+    typeof value.title === "string" &&
+    typeof value.description === "string" &&
+    Array.isArray(value.items) &&
+    value.items.every((item) => typeof item === "string") &&
+    (typeof value.eyebrow === "string" || typeof value.eyebrow === "undefined") &&
+    (typeof value.primaryCta === "string" ||
+      typeof value.primaryCta === "undefined")
+  );
+}
+
+function isFeaturedVideoModule(value: unknown): value is HomepageFeaturedVideoModule {
+  return (
+    isRecord(value) &&
+    value.key === "featured-video" &&
+    typeof value.title === "string" &&
+    typeof value.description === "string" &&
+    (typeof value.eyebrow === "string" || typeof value.eyebrow === "undefined") &&
+    (typeof value.videoUrl === "string" || typeof value.videoUrl === "undefined") &&
+    (typeof value.posterUrl === "string" || typeof value.posterUrl === "undefined") &&
+    (typeof value.primaryCta === "string" ||
+      typeof value.primaryCta === "undefined")
+  );
+}
+
+function isContactCtaModule(value: unknown): value is HomepageContactCtaModule {
+  return (
+    isRecord(value) &&
+    value.key === "contact-cta" &&
+    typeof value.title === "string" &&
+    typeof value.description === "string" &&
+    (typeof value.eyebrow === "string" || typeof value.eyebrow === "undefined") &&
+    (typeof value.primaryCta === "string" ||
+      typeof value.primaryCta === "undefined") &&
+    (typeof value.secondaryCta === "string" ||
+      typeof value.secondaryCta === "undefined")
   );
 }
 
@@ -61,6 +159,91 @@ function normalizeModule(value: unknown): HomepageModule | null {
     return {
       key: "brand-stats",
       items: value.items,
+    };
+  }
+
+  if (isCompanyIntroModule(value)) {
+    return {
+      key: "company-intro",
+      eyebrow: typeof value.eyebrow === "string" ? value.eyebrow : null,
+      title: value.title,
+      description: value.description,
+      highlights: Array.isArray(value.highlights) ? value.highlights : [],
+    };
+  }
+
+  if (isCardListModule(value, "product-categories")) {
+    return {
+      key: "product-categories",
+      eyebrow: typeof value.eyebrow === "string" ? value.eyebrow : null,
+      title: value.title,
+      description: value.description,
+      items: value.items,
+    };
+  }
+
+  if (isCardListModule(value, "industry-solutions")) {
+    return {
+      key: "industry-solutions",
+      eyebrow: typeof value.eyebrow === "string" ? value.eyebrow : null,
+      title: value.title,
+      description: value.description,
+      items: value.items,
+    };
+  }
+
+  if (isCardListModule(value, "project-showcase")) {
+    return {
+      key: "project-showcase",
+      eyebrow: typeof value.eyebrow === "string" ? value.eyebrow : null,
+      title: value.title,
+      description: value.description,
+      items: value.items,
+    };
+  }
+
+  if (isCertificatesExportModule(value)) {
+    return {
+      key: "certificates-export",
+      eyebrow: typeof value.eyebrow === "string" ? value.eyebrow : null,
+      title: value.title,
+      description: value.description,
+      items: value.items,
+      primaryCta: typeof value.primaryCta === "string" ? value.primaryCta : null,
+    };
+  }
+
+  if (isFeaturedVideoModule(value)) {
+    return {
+      key: "featured-video",
+      eyebrow: typeof value.eyebrow === "string" ? value.eyebrow : null,
+      title: value.title,
+      description: value.description,
+      videoUrl: typeof value.videoUrl === "string" ? value.videoUrl : null,
+      posterUrl: typeof value.posterUrl === "string" ? value.posterUrl : null,
+      primaryCta: typeof value.primaryCta === "string" ? value.primaryCta : null,
+    };
+  }
+
+  if (isCardListModule(value, "latest-news")) {
+    return {
+      key: "latest-news",
+      eyebrow: typeof value.eyebrow === "string" ? value.eyebrow : null,
+      title: value.title,
+      description: value.description,
+      items: value.items,
+    };
+  }
+
+  if (isContactCtaModule(value)) {
+    return {
+      key: "contact-cta",
+      eyebrow: typeof value.eyebrow === "string" ? value.eyebrow : null,
+      title: value.title,
+      description: value.description,
+      primaryCta: typeof value.primaryCta === "string" ? value.primaryCta : null,
+      secondaryCta:
+        typeof value.secondaryCta === "string" ? value.secondaryCta : null,
     };
   }
 

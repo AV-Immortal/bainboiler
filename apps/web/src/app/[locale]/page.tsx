@@ -1,6 +1,17 @@
 import { notFound } from "next/navigation";
-import { getMessages } from "@/i18n/messages";
+import { BrandStats } from "@/modules/brand-stats";
+import { CertificatesExport } from "@/modules/certificates-export";
+import { CompanyIntro } from "@/modules/company-intro";
+import { ContactCta } from "@/modules/contact-cta";
+import { FeaturedVideo } from "@/modules/featured-video";
+import { HeroVideo } from "@/modules/hero-video";
+import { IndustrySolutions } from "@/modules/industry-solutions";
+import { LatestNews } from "@/modules/latest-news";
+import { ProductCategories } from "@/modules/product-categories";
+import { ProjectShowcase } from "@/modules/project-showcase";
 import { isValidLocale } from "@/i18n/routing";
+import { getHomepage } from "@/lib/cms/get-homepage";
+import { createHomepageFallback } from "@/lib/cms/mappers/homepage";
 
 type LocaleHomePageProps = {
   params: Promise<{ locale: string }>;
@@ -13,15 +24,22 @@ export default async function LocaleHomePage({ params }: LocaleHomePageProps) {
     notFound();
   }
 
-  const messages = getMessages(locale);
+  const homepage = await getHomepage(locale).catch(() =>
+    createHomepageFallback(locale),
+  );
 
   return (
-    <section className="flex min-h-screen items-center bg-slate-950 px-6 pt-24 text-white">
-      <div className="mx-auto max-w-5xl">
-        <p className="text-sm uppercase tracking-[0.3em] text-sky-300">BAIN BOILER</p>
-        <h1 className="mt-4 text-4xl font-semibold md:text-6xl">{messages.home.heroTitle}</h1>
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">{messages.home.heroDescription}</p>
-      </div>
-    </section>
+    <>
+      <HeroVideo locale={locale} {...homepage.hero} />
+      <BrandStats items={homepage.stats} />
+      <CompanyIntro {...homepage.companyIntro} />
+      <ProductCategories locale={locale} {...homepage.productCategories} />
+      <IndustrySolutions locale={locale} {...homepage.industrySolutions} />
+      <ProjectShowcase locale={locale} {...homepage.projectShowcase} />
+      <CertificatesExport locale={locale} {...homepage.certificatesExport} />
+      <FeaturedVideo locale={locale} {...homepage.featuredVideo} />
+      <LatestNews locale={locale} {...homepage.latestNews} />
+      <ContactCta locale={locale} {...homepage.contactCta} />
+    </>
   );
 }

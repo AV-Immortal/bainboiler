@@ -48,6 +48,11 @@ describe("mapHomepage", () => {
 
     expect(result.hero.primaryCta).toBe("立即询盘");
     expect(result.hero.secondaryCta).toBe("观看视频");
-    expect(result.stats).toEqual([]);
+    expect(result.stats).toEqual([
+      { label: "出口市场", value: "30+" },
+      { label: "热能系统类型", value: "12" },
+      { label: "项目响应", value: "24H" },
+      { label: "工程导向", value: "100%" },
+    ]);
   });
 });
