@@ -1,0 +1,97 @@
+import type { CmsLocale, ContentListPageViewModel } from "../../types/cms";
+import {
+  mapContentList,
+  type ContentRecordItem,
+} from "./mappers/content-list";
+
+export type ContentSectionKey =
+  | "products"
+  | "solutions"
+  | "projects"
+  | "news"
+  | "videos"
+  | "downloads";
+
+const contentPageCopy: Record<
+  CmsLocale,
+  Record<ContentSectionKey, Omit<ContentListPageViewModel, "items">>
+> = {
+  en: {
+    products: {
+      title: "Products",
+      description:
+        "Explore steam boilers, hot water boilers, thermal oil heaters, and engineered auxiliary systems for industrial heat demand.",
+    },
+    solutions: {
+      title: "Solutions",
+      description:
+        "Review application-focused boiler and thermal system solutions built around plant duty, fuel strategy, and compliance requirements.",
+    },
+    projects: {
+      title: "Projects",
+      description:
+        "See selected delivery references covering industrial retrofits, export packages, and coordinated turnkey boiler execution.",
+    },
+    news: {
+      title: "News",
+      description:
+        "Follow product updates, project milestones, and practical thermal engineering insights from the BAIN BOILER team.",
+    },
+    videos: {
+      title: "Videos",
+      description:
+        "Watch fabrication, testing, and delivery highlights that show how BAIN BOILER supports industrial projects end to end.",
+    },
+    downloads: {
+      title: "Downloads",
+      description:
+        "Access company profiles, technical materials, and export documentation prepared for procurement and engineering teams.",
+    },
+  },
+  zh: {
+    products: {
+      title: "产品中心",
+      description:
+        "查看蒸汽锅炉、热水锅炉、导热油炉及配套设备，快速了解不同工业热能场景的产品布局。",
+    },
+    solutions: {
+      title: "解决方案",
+      description:
+        "围绕行业工况、燃料策略与合规要求，了解百恩锅炉的热能系统配置思路与实施方向。",
+    },
+    projects: {
+      title: "工程案例",
+      description:
+        "浏览工业改造、整厂配套与出口交付等典型项目，了解百恩锅炉的工程执行能力。",
+    },
+    news: {
+      title: "新闻中心",
+      description:
+        "关注产品更新、项目进展与工业热能相关洞察，持续了解百恩锅炉的最新动态。",
+    },
+    videos: {
+      title: "视频中心",
+      description:
+        "通过制造、测试与项目交付视频内容，快速感受百恩锅炉的工厂能力与工程细节。",
+    },
+    downloads: {
+      title: "下载中心",
+      description:
+        "获取企业资料、技术文件与出口相关文档，为采购、技术与项目沟通提供参考。",
+    },
+  },
+};
+
+export function getListPage(
+  locale: CmsLocale,
+  section: ContentSectionKey,
+  records: ContentRecordItem[] = [],
+): ContentListPageViewModel {
+  const content = contentPageCopy[locale][section];
+  const basePath = `/${locale}/${section}`;
+
+  return {
+    ...content,
+    items: mapContentList(records, basePath),
+  };
+}

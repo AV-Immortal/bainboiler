@@ -22,6 +22,18 @@ export type HomepageCardItem = {
   meta?: string | null;
 };
 
+export type ContentListItem = {
+  title: string;
+  href: string;
+  summary: string;
+};
+
+export type ContentListPageViewModel = {
+  title: string;
+  description: string;
+  items: ContentListItem[];
+};
+
 export type HomepageBrandStatsModule = {
   key: "brand-stats";
   items: HomepageStatItem[];
