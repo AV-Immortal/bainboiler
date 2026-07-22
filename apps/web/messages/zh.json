@@ -1,0 +1,23 @@
+{
+  "nav": {
+    "about": "关于我们",
+    "products": "产品中心",
+    "solutions": "解决方案",
+    "projects": "工程案例",
+    "contact": "联系我们"
+  },
+  "localeSwitcher": {
+    "zh": "中文",
+    "en": "EN"
+  },
+  "footer": {
+    "companyName": "上海百恩锅炉有限公司",
+    "brand": "BAIN BOILER",
+    "privacyPolicy": "隐私政策",
+    "terms": "服务条款"
+  },
+  "home": {
+    "heroTitle": "面向全球工业客户的锅炉系统与热能方案。",
+    "heroDescription": "当前基线已完成多语言路由、站点壳层与自动跳转，后续任务将在此基础上继续补齐首页模块与 CMS 数据接入。"
+  }
+}

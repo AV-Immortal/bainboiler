@@ -1,0 +1,23 @@
+{
+  "nav": {
+    "about": "About",
+    "products": "Products",
+    "solutions": "Solutions",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "localeSwitcher": {
+    "zh": "中文",
+    "en": "EN"
+  },
+  "footer": {
+    "companyName": "Shanghai Baien Boiler Co., Ltd.",
+    "brand": "BAIN BOILER",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms"
+  },
+  "home": {
+    "heroTitle": "Industrial boiler systems and thermal solutions for global clients.",
+    "heroDescription": "This baseline now includes locale routing, middleware auto-redirect, and the shared site shell. Later tasks can build homepage modules and CMS integration on top of it."
+  }
+}
