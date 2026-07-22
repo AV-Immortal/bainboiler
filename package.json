@@ -1,10 +1,17 @@
 {
   "name": "bainboiler",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0 <=24.x.x",
+    "npm": ">=10.0.0"
+  },
   "workspaces": [
     "apps/web",
     "apps/cms"
   ],
+  "overrides": {
+    "typescript": "5.9.3"
+  },
   "scripts": {
     "dev:web": "npm run dev --workspace web",
     "dev:cms": "npm run develop --workspace cms",
@@ -12,5 +19,12 @@
     "build:cms": "npm run build --workspace cms",
     "lint:web": "npm run lint --workspace web",
     "test:web": "npm run test --workspace web"
+  },
+  "dependencies": {
+    "better-sqlite3": "12.4.1"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0",
+    "@esbuild/win32-x64": "0.21.5"
   }
 }

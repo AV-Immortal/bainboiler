@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { inquirySchema, type InquiryInput } from "@/lib/validation/inquiry";
@@ -188,7 +189,7 @@ export function InquiryForm({ locale, submitLabel }: InquiryFormProps) {
 type FieldProps = {
   label: string;
   error?: string;
-  input: React.ReactNode;
+  input: ReactNode;
 };
 
 function Field({ label, error, input }: FieldProps) {

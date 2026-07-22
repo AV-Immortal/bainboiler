@@ -2,6 +2,8 @@
 
 双语企业官网与内容后台单仓库，包含面向访客的 `Next.js` 网站和面向编辑的 `Strapi` CMS。
 
+默认部署目标为 `Ubuntu` 服务器，建议使用香港的 `Ubuntu 22.04 LTS` 主机。
+
 ## 应用
 
 - `apps/web`: 双语企业官网，使用 `Next.js App Router`

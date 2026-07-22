@@ -9,18 +9,18 @@
     "strapi": "strapi"
   },
   "dependencies": {
-    "@strapi/plugin-cloud": "latest",
-    "@strapi/plugin-users-permissions": "latest",
-    "@strapi/strapi": "latest",
-    "better-sqlite3": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "react-router-dom": "latest",
-    "styled-components": "latest"
+    "@strapi/plugin-cloud": "5.50.2",
+    "@strapi/plugin-users-permissions": "5.50.2",
+    "@strapi/strapi": "5.50.2",
+    "better-sqlite3": "12.4.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.30.3",
+    "styled-components": "6.1.19"
   },
   "devDependencies": {
-    "@types/node": "latest",
-    "typescript": "latest"
+    "@types/node": "20.19.41",
+    "typescript": "5.9.3"
   },
   "engines": {
     "node": ">=20.0.0 <=24.x.x",

@@ -15,4 +15,5 @@ export const inquirySchema = z.object({
   website: z.string().trim().max(200).optional().default(""),
 });
 
-export type InquiryInput = z.infer<typeof inquirySchema>;
+export type InquiryInput = z.input<typeof inquirySchema>;
+export type InquiryPayload = z.output<typeof inquirySchema>;
