@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site Setting"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "siteName": { "type": "string", "required": true },
+    "defaultLocale": { "type": "enumeration", "enum": ["zh", "en"], "default": "en" },
+    "contactEmail": { "type": "email" },
+    "contactPhone": { "type": "string" },
+    "whatsApp": { "type": "string" },
+    "wechat": { "type": "string" }
+  }
+}
