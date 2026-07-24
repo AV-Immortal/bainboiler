@@ -1,0 +1,40 @@
+name: Build and Push to Aliyun ACR
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Aliyun ACR
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-hangzhou.aliyuncs.com
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push web
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.web
+          push: true
+          tags: |
+            registry.cn-hangzhou.aliyuncs.com/lost1kb/bainboiler-web:latest
+            registry.cn-hangzhou.aliyuncs.com/lost1kb/bainboiler-web:1.0.0
+
+      - name: Build and push studio
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.studio
+          push: true
+          tags: |
+            registry.cn-hangzhou.aliyuncs.com/lost1kb/bainboiler-studio:latest
+            registry.cn-hangzhou.aliyuncs.com/lost1kb/bainboiler-studio:1.0.0
