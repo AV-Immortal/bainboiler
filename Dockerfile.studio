@@ -60,7 +60,8 @@ COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/sanity.config.ts ./s
 COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/sanity.cli.ts ./sanity.cli.ts
 COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/tsconfig.json ./tsconfig.json
 COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/schemas ./schemas
-COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/static ./static
+# static 目录为空，直接创建即可
+RUN mkdir -p ./static
 COPY --from=builder --chown=sanity:nodejs /repo/node_modules ./node_modules
 
 USER sanity
