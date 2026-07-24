@@ -27,6 +27,11 @@ FROM node:20-alpine AS builder
 WORKDIR /repo
 ENV NODE_ENV=production
 
+ARG SANITY_STUDIO_PROJECT_ID=placeholder
+ARG SANITY_STUDIO_DATASET=production
+ENV SANITY_STUDIO_PROJECT_ID=$SANITY_STUDIO_PROJECT_ID
+ENV SANITY_STUDIO_DATASET=$SANITY_STUDIO_DATASET
+
 COPY --from=deps /repo/node_modules ./node_modules
 COPY . .
 
