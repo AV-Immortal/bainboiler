@@ -1,8 +1,7 @@
 import type { CmsLocale, ContentListPageViewModel } from "../../types/cms";
-import {
-  mapContentList,
-  type ContentRecordItem,
-} from "./mappers/content-list";
+import { tryGetSanityClient } from "../../../sanity/client";
+import { listQuery } from "../../../sanity/queries";
+import { mapSanityList } from "./mappers/content-list";
 
 export type ContentSectionKey =
   | "products"
@@ -12,9 +11,28 @@ export type ContentSectionKey =
   | "videos"
   | "downloads";
 
-const contentPageCopy: Record<
+/**
+ * section 名 → Sanity _type 名（单数）。
+ */
+const SECTION_TO_TYPE: Record<
+  ContentSectionKey,
+  "product" | "solution" | "project" | "article" | "video" | "download"
+> = {
+  products: "product",
+  solutions: "solution",
+  projects: "project",
+  news: "article",
+  videos: "video",
+  downloads: "download",
+};
+
+/**
+ * 列表页的硬编码标题/描述（保留自原文件）。Sanity 文档本身没有 description 字段，
+ * 暂时由代码维护；如需"管理员可改 description"，需为每种 collection 加 description 字段。
+ */
+const listPageCopy: Record<
   CmsLocale,
-  Record<ContentSectionKey, Omit<ContentListPageViewModel, "items">>
+  Record<ContentSectionKey, { title: string; description: string }>
 > = {
   en: {
     products: {
@@ -82,16 +100,39 @@ const contentPageCopy: Record<
   },
 };
 
-export function getListPage(
+export async function getListPage(
   locale: CmsLocale,
   section: ContentSectionKey,
-  records: ContentRecordItem[] = [],
-): ContentListPageViewModel {
-  const content = contentPageCopy[locale][section];
+): Promise<ContentListPageViewModel> {
+  const copy = listPageCopy[locale][section];
   const basePath = `/${locale}/${section}`;
 
-  return {
-    ...content,
-    items: mapContentList(records, basePath),
-  };
+  const client = tryGetSanityClient();
+  if (!client) {
+    return { ...copy, items: [] };
+  }
+
+  try {
+    const sectionType = SECTION_TO_TYPE[section];
+    const data = await client.fetch<Array<{
+      slug: string;
+      title: { zh?: string; en?: string } | null;
+      summary: { zh?: string; en?: string } | null;
+      heroImageUrl?: string | null;
+    }> | null>(
+      listQuery(sectionType),
+      {},
+      { next: { revalidate: 60, tags: ["sanity", `sanity:${sectionType}`] } },
+    );
+
+    return {
+      ...copy,
+      items: mapSanityList(data ?? [], basePath, locale),
+    };
+  } catch (err) {
+    if (process.env.NODE_ENV !== "test") {
+      console.warn(`[getListPage:${section}] Sanity fetch failed:`, err);
+    }
+    return { ...copy, items: [] };
+  }
 }

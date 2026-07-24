@@ -7,24 +7,26 @@
   },
   "workspaces": [
     "apps/web",
-    "apps/cms"
+    "apps/studio"
   ],
   "overrides": {
     "typescript": "5.9.3"
   },
   "scripts": {
     "dev:web": "npm run dev --workspace web",
-    "dev:cms": "npm run develop --workspace cms",
+    "dev:studio": "npm run dev --workspace studio",
     "build:web": "npm run build --workspace web",
-    "build:cms": "npm run build --workspace cms",
+    "build:studio": "npm run build --workspace studio",
     "lint:web": "npm run lint --workspace web",
-    "test:web": "npm run test --workspace web"
+    "test:web": "npm run test --workspace web",
+    "docker:build": "docker build -f Dockerfile.web -t bainboiler/web:latest . && docker build -f Dockerfile.studio -t bainboiler/studio:latest .",
+    "docker:build:web": "docker build -f Dockerfile.web -t bainboiler/web:latest .",
+    "docker:build:studio": "docker build -f Dockerfile.studio -t bainboiler/studio:latest .",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:ps": "docker compose ps"
   },
-  "dependencies": {
-    "better-sqlite3": "12.4.1"
-  },
-  "devDependencies": {
-    "jsdom": "26.1.0",
-    "@esbuild/win32-x64": "0.21.5"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

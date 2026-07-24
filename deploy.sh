@@ -17,10 +17,7 @@ npm ci
 echo "🏗️ 3. 编译前端应用 (Next.js)..."
 npm run build:web
 
-echo "🏗️ 4. 编译后端管理系统 (Strapi)..."
-npm run build:cms
-
-echo "🔄 5. 重启 PM2 守护进程 (平滑重启)..."
+echo "🔄 4. 重启 PM2 守护进程 (平滑重启)..."
 # 使用 reload 可以实现 0 宕机时间平滑重启
 pm2 reload ecosystem.config.js --env production --update-env
 

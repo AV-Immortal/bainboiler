@@ -7,7 +7,7 @@ type SolutionsPageProps = {
 
 export default async function SolutionsPage({ params }: SolutionsPageProps) {
   const locale = await resolveRouteLocale(params);
-  const page = getListPage(locale, "solutions");
+  const page = await getListPage(locale, "solutions");
 
   return <ContentPageShell title={page.title} description={page.description} items={page.items} />;
 }

@@ -7,7 +7,7 @@ type VideosPageProps = {
 
 export default async function VideosPage({ params }: VideosPageProps) {
   const locale = await resolveRouteLocale(params);
-  const page = getListPage(locale, "videos");
+  const page = await getListPage(locale, "videos");
 
   return <ContentPageShell title={page.title} description={page.description} items={page.items} />;
 }

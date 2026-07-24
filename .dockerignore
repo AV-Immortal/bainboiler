@@ -1,0 +1,70 @@
+# =============================================================================
+# 排除不需要打进镜像的文件
+# =============================================================================
+
+# 依赖（镜像内会重新装）
+node_modules
+**/node_modules
+
+# Next.js / Studio 构建产物（镜像内会重新 build）
+.next
+**/.next
+dist
+**/dist
+build
+**/build
+out
+**/out
+
+# Sanity 本地缓存
+.sanity
+**/.sanity
+
+# 测试 / 覆盖率
+coverage
+**/coverage
+**/__tests__
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+vitest.config.ts
+
+# 环境文件（运行时通过 docker-compose 注入）
+.env
+.env.*
+!.env.example
+!apps/web/.env.example
+!apps/studio/.env.example
+
+# Git / OS
+.git
+.gitignore
+.gitattributes
+.DS_Store
+Thumbs.db
+.editorconfig
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# 日志
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 部署 / 文档
+.superpowers
+.trae
+deploy.sh
+ecosystem.config.js
+README.md
+docs
+
+# TypeScript 构建信息
+*.tsbuildinfo

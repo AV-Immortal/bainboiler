@@ -1,0 +1,76 @@
+# =============================================================================
+# Bainboiler Web (Next.js 16) — production image
+# =============================================================================
+# Build:  docker build -f Dockerfile.web -t bainboiler/web:latest .
+# Run:    docker run -p 3000:3000 \
+#           -e NEXT_PUBLIC_SANITY_PROJECT_ID=xxx \
+#           -e NEXT_PUBLIC_SANITY_DATASET=production \
+#           -e NEXT_PUBLIC_SITE_URL=https://www.bainboiler.com \
+#           bainboiler/web:latest
+# =============================================================================
+
+# ---- Stage 1: deps ----
+# 装全 monorepo 依赖（包含 web 实际需要的 next/react/@sanity/client 等）
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /repo
+
+# 复制 workspace 配置文件
+COPY package.json package-lock.json ./
+COPY apps/web/package.json apps/web/package.json
+COPY apps/studio/package.json apps/studio/package.json
+
+# 用 ci 装锁文件里的版本（构建可复现）
+# --ignore-scripts 跳过原生 binding 的 postinstall，运行时改用通用 npm 装
+# 实际安装时再单独 npm install @rollup/rollup-linux-x64-gnu 等
+RUN npm ci --omit=optional --legacy-peer-deps --ignore-scripts
+
+# 补装运行时需要的 native bindings（docker 用 linux-x64-gnu）
+RUN npm install \
+      @rollup/rollup-linux-x64-gnu \
+      @esbuild/linux-x64 \
+      --no-save \
+      --no-audit --no-fund
+
+# ---- Stage 2: builder ----
+FROM node:20-alpine AS builder
+WORKDIR /repo
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+
+# 复用 stage 1 的 node_modules
+COPY --from=deps /repo/node_modules ./node_modules
+COPY . .
+
+# 构建 web（用 standalone 输出，参考 apps/web/next.config.ts）
+RUN npm run build:web
+
+# ---- Stage 3: runner ----
+# 用非 root 用户跑，符合安全最佳实践
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+# 创建非 root 用户
+RUN addgroup --system --gid 1001 nodejs \
+ && adduser  --system --uid 1001 nextjs
+
+# 复制 standalone server（包含 node_modules 的子集 + server.js）
+COPY --from=builder --chown=nextjs:nodejs /repo/apps/web/.next/standalone ./
+# 复制静态资源（standalone 不会自动包含）
+COPY --from=builder --chown=nextjs:nodejs /repo/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /repo/apps/web/public ./apps/web/public
+
+USER nextjs
+
+EXPOSE 3000
+
+# 简单的健康检查：访问首页应该返回 200
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/zh || exit 1
+
+CMD ["node", "apps/web/server.js"]

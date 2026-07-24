@@ -7,11 +7,16 @@ dist/
 build/
 out/
 
+# Sanity Studio outputs
+apps/studio/.sanity/
+apps/studio/dist/
+
 # Environment files
 .env
 .env.*
 !.env.example
 !apps/web/.env.example
+!apps/studio/.env.example
 
 # Logs
 *.log
@@ -31,7 +36,4 @@ Thumbs.db
 coverage/
 apps/web/.next/
 apps/web/coverage/
-apps/cms/.strapi/
-apps/cms/.tmp/
-apps/cms/build/
-apps/cms/dist/
+.trae/

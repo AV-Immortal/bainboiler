@@ -2,56 +2,173 @@
 
 ## 概览
 
-当前项目目标部署环境为 `Ubuntu` 服务器，推荐放在香港机房或香港云主机上。
+当前项目支持两种部署方式：
 
-项目包含两个独立应用：
+1. **传统 PM2 方式**（在 Ubuntu 服务器上直接跑 Node 进程）
+2. **Docker 容器化方式**（推荐用于云服务器 / CI/CD / 镜像仓库分发）
 
-- `apps/web`: 对外官网，建议部署在 `www.bainboiler.com`
-- `apps/cms`: 内容后台，建议部署在 `cms.bainboiler.com`
+CMS 数据存放在 Sanity Content Lake（云服务），不需要自托管数据库或后端进程。
 
-建议采用以下部署结构：
+### 项目结构
+
+- `apps/web`: 对外官网，部署在 `www.bainboiler.com`
+- `apps/studio`: 内容后台，可部署到 `*.sanity.studio` 或自托管
+
+建议基础环境：
 
 - `Ubuntu 22.04 LTS`
-- `Node.js 20 LTS`
+- `Node.js 20 LTS`（仅传统 PM2 方式需要）
 - `Nginx` 作为反向代理
-- `PM2` 或 `systemd` 作为 Node 进程守护
-- `HTTPS` 证书用于主站和 CMS 子域名
+- `HTTPS` 证书
+- **Docker 方式需要 `Docker 24+` 和 `docker compose v2`**
 
-两者都应启用 HTTPS，并让 `apps/web` 通过 `CMS_BASE_URL` 访问 CMS。
+---
 
-## Ubuntu 基础准备
+## 方式一：Docker 部署（推荐）
 
-### 系统依赖
+### 1. 准备环境
 
-推荐先安装：
+```bash
+# 安装 Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+newgrp docker
 
-- `curl`
-- `git`
-- `build-essential`
-- `python3`
-- `nginx`
+# 验证
+docker --version
+docker compose version
+```
 
-示例命令：
+### 2. 配置环境变量
+
+```bash
+cd /var/www/bainboiler
+cp .env.example .env
+# 编辑 .env 填入真实 Sanity 凭据
+nano .env
+```
+
+`.env` 内容示例：
+
+```env
+NEXT_PUBLIC_SANITY_PROJECT_ID=abc12345
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01
+SANITY_API_READ_TOKEN=                  # 可选
+NEXT_PUBLIC_SITE_URL=https://www.bainboiler.com
+WEB_PORT=3000
+```
+
+### 3. 构建并启动
+
+```bash
+# 一次性构建 + 后台启动
+docker compose up -d --build
+
+# 查看状态
+docker compose ps
+
+# 跟踪日志
+docker compose logs -f web
+```
+
+镜像尺寸参考：
+
+| 镜像 | 大小 | 内容 |
+|---|---|---|
+| `bainboiler/web` | ~150MB | Next.js standalone + node:20-alpine |
+| `bainboiler/studio` | ~250MB | Sanity Studio dist + node:20-alpine |
+
+### 4. 日常更新
+
+```bash
+cd /var/www/bainboiler
+git pull
+docker compose up -d --build
+```
+
+`--build` 会重新构建改变的层；`up -d` 会平滑重启容器。
+
+### 5. 单独操作
+
+```bash
+# 只重启 web
+docker compose restart web
+
+# 只看 studio 日志
+docker compose logs -f studio
+
+# 停止全部
+docker compose down
+
+# 清理悬空镜像
+docker image prune -f
+```
+
+### 6. Nginx 反代（Docker 方式）
+
+Nginx 跑在宿主机上，代理到 `127.0.0.1:3000`（web 容器）和 `127.0.0.1:3333`（studio 容器，如果暴露了端口）：
+
+```nginx
+server {
+    server_name www.bainboiler.com bainboiler.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# 可选：自托管 Studio（去掉 docker-compose.yml 里 studio.ports 的注释后）
+server {
+    server_name studio.bainboiler.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3333;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+### 7. 推送到镜像仓库（可选）
+
+```bash
+# 登录
+docker login registry.example.com
+
+# 打 tag
+docker tag bainboiler/web:latest registry.example.com/bainboiler/web:v1.0.0
+docker tag bainboiler/studio:latest registry.example.com/bainboiler/studio:v1.0.0
+
+# 推送
+docker push registry.example.com/bainboiler/web:v1.0.0
+docker push registry.example.com/bainboiler/studio:v1.0.0
+```
+
+服务器上 `docker compose pull && docker compose up -d` 即可拉新版本。
+
+---
+
+## 方式二：传统 PM2 部署
+
+### Ubuntu 基础准备
 
 ```bash
 sudo apt update
 sudo apt install -y curl git build-essential python3 nginx
-```
-
-### Node.js
-
-推荐使用 `Node.js 20 LTS`。
-
-示例命令：
-
-```bash
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 node -v
 npm -v
 ```
-
-## 代码部署
 
 ### 拉取项目
 
@@ -68,16 +185,20 @@ cd /var/www/bainboiler
 npm install
 ```
 
-如果后续 `Strapi` 的 `better-sqlite3` 或其他原生依赖编译失败，优先检查 `build-essential`、`python3`、Node 版本是否完整。
+> 用 `--legacy-peer-deps --omit=optional` 可避免 rolldown 等原生 binding 卡死：
+> `npm install --legacy-peer-deps --omit=optional`
 
 ## Web 部署
 
 ### 必需环境变量
 
-在 `apps/web/.env.production` 中至少配置：
+在 `apps/web/.env.production` 中：
 
 ```env
-CMS_BASE_URL=https://cms.bainboiler.com
+NEXT_PUBLIC_SANITY_PROJECT_ID=<your-project-id>
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01
+SANITY_API_READ_TOKEN=<optional>
 NEXT_PUBLIC_SITE_URL=https://www.bainboiler.com
 ```
 
@@ -88,108 +209,71 @@ npm run build:web
 npm run start --workspace web
 ```
 
-如果需要固定端口启动，建议后续补充 `start` 命令参数，例如：
+固定端口：
 
 ```bash
 npm run start --workspace web -- --hostname 127.0.0.1 --port 3000
 ```
 
-## CMS 部署
+## Studio 部署
 
-### 必需环境变量
-
-建议在 `apps/cms/.env` 中至少配置数据库、密钥与后台地址。首期如果使用 SQLite，也建议先把关键密钥固定下来，不要用临时值。
-
-### 构建与启动
+### 本地启动（开发）
 
 ```bash
-npm run build:cms
-npm run start --workspace cms
+cd apps/studio
+npx sanity dev
+# → http://localhost:3333
 ```
 
-建议让 CMS 仅监听内网地址或本机地址，再由 `Nginx` 反代出去。
+### 部署到 Sanity 官方托管（推荐）
 
-## 自动化部署与更新
+```bash
+cd apps/studio
+npx sanity deploy
+# → https://<project>.sanity.studio
+```
 
-为了让你以后每次更新代码都能“一键极速部署”，我们已经在项目根目录配置了 `deploy.sh` 脚本和 `ecosystem.config.js` 文件。
+### PM2 自托管（如果不想用 Sanity 官方）
+
+```bash
+cd apps/studio
+npm run build
+pm2 start "npx sanity start --port 3333 --host 0.0.0.0" --name bainboiler-studio
+```
+
+## 自动化部署（PM2 方式）
+
+`deploy.sh` 和 `ecosystem.config.js` 用于传统方式。
 
 ### 初始化服务器
 
-在 Ubuntu 服务器上首次拉取代码并安装好 Node.js 和 PM2 后：
-
 ```bash
-# 全局安装 pm2
 npm install -g pm2
-
-# 给脚本增加执行权限
 chmod +x deploy.sh
-
-# 执行首次部署
 ./deploy.sh
-
-# 让 PM2 开机自启
 pm2 startup
 pm2 save
 ```
 
-### 日常更新流程
-
-以后你在本地写好代码并 `git push` 之后，只需要在服务器上运行：
+### 日常更新
 
 ```bash
 cd /var/www/bainboiler
 ./deploy.sh
 ```
 
-这个脚本会自动完成：
-1. `git pull` 拉取最新代码
-2. `npm ci` 全新安装依赖
-3. 重新构建 Web 前端和 CMS 后台
-4. 使用 `pm2 reload` 实现 0 宕机时间平滑重启
-
-如果你希望完全自动化，可以在 GitHub 仓库里配置 Webhook 或者 GitHub Actions，在每次 push main 分支时通过 SSH 自动执行服务器上的 `./deploy.sh`。
-
-## Nginx 反向代理
-
-建议：
-
-- `www.bainboiler.com` -> `127.0.0.1:3000`
-- `cms.bainboiler.com` -> CMS 监听端口
-
-主站示例：
-
-```nginx
-server {
-    server_name www.bainboiler.com bainboiler.com;
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
 ## HTTPS
-
-推荐使用 `Certbot` 签发证书。
-
-示例：
 
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d bainboiler.com -d www.bainboiler.com -d cms.bainboiler.com
+sudo certbot --nginx -d bainboiler.com -d www.bainboiler.com
 ```
 
 ## 上线检查
 
-- 确认服务器为 `Ubuntu 22.04` 或兼容版本
-- 确认 `Node.js 20 LTS` 已安装
+- 确认 `NEXT_PUBLIC_SANITY_PROJECT_ID` 已配置（未配置也能跑，但首页用 fallback）
 - 确认 `NEXT_PUBLIC_SITE_URL` 指向生产域名
-- 确认 `CMS_BASE_URL` 指向可访问的 CMS 域名
 - 确认首页和核心栏目页可正常返回 `200`
 - 确认中英文路径都输出正确 `canonical` 与 `alternate metadata`
-- 确认 `Nginx`、`PM2/systemd`、HTTPS 证书都已生效
+- Docker 方式：`docker compose ps` 显示两个服务都是 `healthy`
+- 传统方式：`pm2 list` 显示 web 进程 `online`

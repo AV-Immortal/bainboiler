@@ -1,58 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { mapHomepage } from "../homepage";
+import { pickLocale } from "../homepage";
 
-describe("mapHomepage", () => {
-  it("maps hero and stats blocks from page config", () => {
-    const result = mapHomepage({
-      title: "Home",
-      locale: "en",
-      modules: [
-        {
-          key: "hero-video",
-          headline: "Industrial Boiler Systems",
-          subheadline: "Premium steam boiler solutions",
-          primaryCta: "Get Quote",
-          secondaryCta: "Watch Video",
-          videoUrl: "https://example.com/hero.mp4",
-        },
-        {
-          key: "brand-stats",
-          items: [{ label: "Countries", value: "30+" }],
-        },
-      ],
-    });
-
-    expect(result.hero).toEqual({
-      headline: "Industrial Boiler Systems",
-      subheadline: "Premium steam boiler solutions",
-      primaryCta: "Get Quote",
-      secondaryCta: "Watch Video",
-      videoUrl: "https://example.com/hero.mp4",
-      posterUrl: undefined,
-    });
-    expect(result.stats).toEqual([{ label: "Countries", value: "30+" }]);
+describe("pickLocale (homepage mapper helper)", () => {
+  it("returns the requested locale value when present and non-empty", () => {
+    expect(pickLocale({ zh: "中文", en: "English" }, "en")).toBe("English");
+    expect(pickLocale({ zh: "中文", en: "English" }, "zh")).toBe("中文");
   });
 
-  it("falls back to locale-specific CTA labels when optional fields are missing", () => {
-    const result = mapHomepage({
-      title: "首页",
-      locale: "zh",
-      modules: [
-        {
-          key: "hero-video",
-          headline: "工业锅炉系统",
-          subheadline: "面向全球客户的热能解决方案",
-        },
-      ],
-    });
+  it("falls back to the other locale when requested locale is missing or empty", () => {
+    expect(pickLocale({ zh: "中文", en: "" }, "en")).toBe("中文");
+    expect(pickLocale({ zh: null, en: "English" }, "zh")).toBe("English");
+  });
 
-    expect(result.hero.primaryCta).toBe("立即询盘");
-    expect(result.hero.secondaryCta).toBe("观看视频");
-    expect(result.stats).toEqual([
-      { label: "出口市场", value: "30+" },
-      { label: "热能系统类型", value: "12" },
-      { label: "项目响应", value: "24H" },
-      { label: "工程导向", value: "100%" },
-    ]);
+  it("returns empty string for null / undefined", () => {
+    expect(pickLocale(null, "en")).toBe("");
+    expect(pickLocale(undefined, "zh")).toBe("");
   });
 });

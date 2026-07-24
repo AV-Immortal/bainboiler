@@ -7,7 +7,7 @@ type DownloadsPageProps = {
 
 export default async function DownloadsPage({ params }: DownloadsPageProps) {
   const locale = await resolveRouteLocale(params);
-  const page = getListPage(locale, "downloads");
+  const page = await getListPage(locale, "downloads");
 
   return <ContentPageShell title={page.title} description={page.description} items={page.items} />;
 }

@@ -1,57 +1,93 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getHomepage } from "../get-homepage";
-import { fetchJson } from "../fetch-json";
+import { tryGetSanityClient } from "../../../../sanity/client";
 
-vi.mock("../fetch-json", () => ({
-  fetchJson: vi.fn(),
+vi.mock("../../../../sanity/client", () => ({
+  tryGetSanityClient: vi.fn(),
 }));
 
-const fetchJsonMock = vi.mocked(fetchJson);
+const clientMock = vi.mocked(tryGetSanityClient);
 
-describe("getHomepage", () => {
+type SanityPage = {
+  modules?: Array<{ _type: string; _key: string }>;
+  seo?: {
+    title?: { zh?: string; en?: string };
+    description?: { zh?: string; en?: string };
+  };
+};
+
+function buildClient(data: SanityPage | null) {
+  return {
+    fetch: vi.fn().mockResolvedValue(data),
+  } as unknown as ReturnType<typeof tryGetSanityClient> & { fetch: ReturnType<typeof vi.fn> };
+}
+
+describe("getHomepage (Sanity)", () => {
+  const originalEnv = { ...process.env };
+
   beforeEach(() => {
-    fetchJsonMock.mockReset();
-    process.env.CMS_BASE_URL = "http://localhost:1337";
+    clientMock.mockReset();
   });
 
-  it("loads homepage config for the requested locale and maps it", async () => {
-    fetchJsonMock.mockResolvedValue({
-      data: {
-        title: "Home",
-        locale: "en",
-        modules: [
-          {
-            key: "hero-video",
-            headline: "Industrial Boiler Systems",
-            subheadline: "Premium steam boiler solutions",
-          },
-          {
-            key: "brand-stats",
-            items: [{ label: "Countries", value: "30+" }],
-          },
-        ],
-      },
-    });
+  afterEach(() => {
+    process.env = { ...originalEnv };
+  });
+
+  it("returns fallback when NEXT_PUBLIC_SANITY_PROJECT_ID is missing", async () => {
+    delete process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+    clientMock.mockReturnValue(null);
 
     const result = await getHomepage("en");
-
-    const [requestUrl, requestOptions] = fetchJsonMock.mock.calls[0] ?? [];
-
-    expect(String(requestUrl)).toBe(
-      "http://localhost:1337/api/page-configs?filters%5Bslug%5D%5B%24eq%5D=home&filters%5Blocale%5D%5B%24eq%5D=en&pagination%5BpageSize%5D=1",
-    );
-    expect(requestOptions).toEqual({
-      next: { revalidate: 60 },
-    });
-    expect(result.hero.headline).toBe("Industrial Boiler Systems");
-    expect(result.stats[0]?.value).toBe("30+");
+    expect(result.modules.length).toBeGreaterThan(0);
+    expect(result.seo.title).toBeTruthy();
   });
 
-  it("throws when CMS_BASE_URL is missing", async () => {
-    delete process.env.CMS_BASE_URL;
+  it("returns fallback when Sanity client returns null", async () => {
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = "fake";
+    const client = buildClient(null);
+    clientMock.mockReturnValue(client);
 
-    await expect(getHomepage("zh")).rejects.toThrow(
-      "CMS_BASE_URL is not configured",
-    );
+    const result = await getHomepage("zh");
+    expect(result.modules.length).toBeGreaterThan(0);
+  });
+
+  it("uses Sanity data when client returns page with modules", async () => {
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = "fake";
+    const client = buildClient({
+      modules: [
+        { _type: "homepage.heroVideo", _key: "k1" },
+        { _type: "homepage.brandStats", _key: "k2" },
+      ],
+      seo: { title: { zh: "首页 - 中文", en: "Home - English" } },
+    });
+    clientMock.mockReturnValue(client);
+
+    const result = await getHomepage("en");
+    expect(result.modules).toHaveLength(2);
+    expect(result.modules[0]?._type).toBe("homepage.heroVideo");
+    expect(result.seo.title).toBe("Home - English");
+  });
+
+  it("falls back to other locale when requested locale is missing in seo", async () => {
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = "fake";
+    const client = buildClient({
+      modules: [{ _type: "homepage.heroVideo", _key: "k1" }],
+      seo: { title: { zh: "只有中文", en: undefined } },
+    });
+    clientMock.mockReturnValue(client);
+
+    const result = await getHomepage("en");
+    expect(result.seo.title).toBe("只有中文");
+  });
+
+  it("falls back gracefully on Sanity fetch error", async () => {
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = "fake";
+    const client = {
+      fetch: vi.fn().mockRejectedValue(new Error("network down")),
+    };
+    clientMock.mockReturnValue(client as never);
+
+    const result = await getHomepage("zh");
+    expect(result.modules.length).toBeGreaterThan(0);
   });
 });

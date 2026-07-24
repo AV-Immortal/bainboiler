@@ -7,7 +7,7 @@ type ProjectsPageProps = {
 
 export default async function ProjectsPage({ params }: ProjectsPageProps) {
   const locale = await resolveRouteLocale(params);
-  const page = getListPage(locale, "projects");
+  const page = await getListPage(locale, "projects");
 
   return <ContentPageShell title={page.title} description={page.description} items={page.items} />;
 }

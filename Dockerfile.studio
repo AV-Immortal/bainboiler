@@ -1,0 +1,66 @@
+# =============================================================================
+# Bainboiler Sanity Studio — production image
+# =============================================================================
+# Build:  docker build -f Dockerfile.studio -t bainboiler/studio:latest .
+# Run:    docker run -p 3333:3333 \
+#           -e SANITY_STUDIO_PROJECT_ID=xxx \
+#           -e SANITY_STUDIO_DATASET=production \
+#           bainboiler/studio:latest
+# =============================================================================
+# Sanity Studio 是 Vite SPA，build 后用 `sanity start` 自带服务器跑。
+# 数据仍在 Sanity Content Lake（云），本镜像只是编辑器前端。
+# =============================================================================
+
+# ---- Stage 1: deps ----
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /repo
+
+COPY package.json package-lock.json ./
+COPY apps/web/package.json apps/web/package.json
+COPY apps/studio/package.json apps/studio/package.json
+
+RUN npm ci --omit=optional --legacy-peer-deps --ignore-scripts
+RUN npm install @rollup/rollup-linux-x64-gnu @esbuild/linux-x64 --no-save --no-audit --no-fund
+
+# ---- Stage 2: builder ----
+FROM node:20-alpine AS builder
+WORKDIR /repo
+ENV NODE_ENV=production
+
+COPY --from=deps /repo/node_modules ./node_modules
+COPY . .
+
+# sanity build 把 Vite SPA 输出到 apps/studio/dist
+RUN npm run build:studio
+
+# ---- Stage 3: runner ----
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV SANITY_STUDIO_PROJECT_ID=${SANITY_STUDIO_PROJECT_ID}
+ENV SANITY_STUDIO_DATASET=${SANITY_STUDIO_DATASET:-production}
+
+RUN addgroup --system --gid 1001 nodejs \
+ && adduser  --system --uid 1001 sanity
+
+# studio 只需要 dist 产物 + node_modules 中 sanity 的运行依赖
+# standalone 我们用更直接的方式：只复制 studio 目录的 deps
+COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/dist ./dist
+COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/package.json ./package.json
+COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/sanity.config.ts ./sanity.config.ts
+COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/sanity.cli.ts ./sanity.cli.ts
+COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/tsconfig.json ./tsconfig.json
+COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/schemas ./schemas
+COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/static ./static
+COPY --from=builder --chown=sanity:nodejs /repo/node_modules ./node_modules
+
+USER sanity
+
+EXPOSE 3333
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3333/ || exit 1
+
+CMD ["npx", "sanity", "start", "--port", "3333", "--host", "0.0.0.0"]

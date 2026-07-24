@@ -7,7 +7,7 @@ type NewsPageProps = {
 
 export default async function NewsPage({ params }: NewsPageProps) {
   const locale = await resolveRouteLocale(params);
-  const page = getListPage(locale, "news");
+  const page = await getListPage(locale, "news");
 
   return <ContentPageShell title={page.title} description={page.description} items={page.items} />;
 }
