@@ -25,6 +25,7 @@ jobs:
           context: .
           file: ./Dockerfile.web
           push: true
+          no-cache: true
           tags: |
             crpi-lhx0j8tk9kmxgf0x.cn-hangzhou.personal.cr.aliyuncs.com/lost1kb/bainboiler-web:latest
             crpi-lhx0j8tk9kmxgf0x.cn-hangzhou.personal.cr.aliyuncs.com/lost1kb/bainboiler-web:1.0.0
@@ -35,6 +36,7 @@ jobs:
           context: .
           file: ./Dockerfile.studio
           push: true
+          no-cache: true
           tags: |
             crpi-lhx0j8tk9kmxgf0x.cn-hangzhou.personal.cr.aliyuncs.com/lost1kb/bainboiler-studio:latest
             crpi-lhx0j8tk9kmxgf0x.cn-hangzhou.personal.cr.aliyuncs.com/lost1kb/bainboiler-studio:1.0.0
