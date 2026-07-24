@@ -6,7 +6,6 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-# 仅装 web 工作区依赖
 COPY package.json package-lock.json* ./
 COPY apps/web/package.json apps/web/
 COPY apps/studio/package.json apps/studio/
@@ -25,7 +24,6 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# 构建时允许 placeholder env，避免缺 Sanity 凭据时报错
 ENV NEXT_PUBLIC_SANITY_PROJECT_ID=placeholder
 ENV NEXT_PUBLIC_SANITY_DATASET=production
 ENV NEXT_PUBLIC_SANITY_API_VERSION=2025-01-01
