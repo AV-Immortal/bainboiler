@@ -1,3 +1,6 @@
+import { urlFor } from "../../../sanity/image";
+import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
+
 type HeroVideoProps = {
   locale: "zh" | "en";
   headline: string;
@@ -6,14 +9,84 @@ type HeroVideoProps = {
   secondaryCta: string;
   videoUrl?: string;
   posterUrl?: string;
+  // 新增：背景配置（来自 Sanity）
+  backgroundType?: "color" | "gradient" | "image";
+  backgroundColor?: string;
+  backgroundGradient?: { from?: string; to?: string; angle?: number };
+  backgroundImage?: SanityImageSource;
+  backgroundOverlayOpacity?: number;
 };
 
 export function HeroVideo(props: HeroVideoProps) {
   const primaryHref = `/${props.locale}/contact`;
   const secondaryHref = "#featured-video";
 
+  // 构建背景样式
+  const bgStyle: React.CSSProperties = {};
+  const bgType = props.backgroundType ?? "color";
+
+  if (bgType === "color" && props.backgroundColor) {
+    bgStyle.background = props.backgroundColor;
+  } else if (
+    bgType === "gradient" &&
+    props.backgroundGradient?.from &&
+    props.backgroundGradient?.to
+  ) {
+    const angle = props.backgroundGradient.angle ?? 135;
+    bgStyle.background = `linear-gradient(${angle}deg, ${props.backgroundGradient.from}, ${props.backgroundGradient.to})`;
+  } else if (bgType === "image" && props.backgroundImage) {
+    const imgUrl = urlFor(props.backgroundImage)
+      .width(1920)
+      .fit("max")
+      .auto("format")
+      .url();
+    if (imgUrl) bgStyle.backgroundImage = `url(${imgUrl})`;
+    bgStyle.backgroundSize = "cover";
+    bgStyle.backgroundPosition = "center";
+  }
+
+  // 蒙层透明度（仅 image 模式）
+  const overlayOpacity = Math.max(0, Math.min(100, props.backgroundOverlayOpacity ?? 50));
+  const overlayAlpha = (100 - overlayOpacity) / 100; // 蒙层 alpha = 1 - 透出率
+
   return (
     <section className="relative isolate min-h-[100svh] overflow-hidden bg-slate-950 text-white">
+      {/* 背景层：图片 / 渐变 / 纯色 */}
+      {bgType === "image" && props.backgroundImage ? (
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-cover bg-center"
+          style={bgStyle}
+        />
+      ) : bgType === "gradient" ? (
+        <div aria-hidden className="absolute inset-0" style={bgStyle} />
+      ) : (
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={bgStyle.background ? bgStyle : undefined}
+        />
+      )}
+
+      {/* 蒙层（仅 image 模式） */}
+      {bgType === "image" && overlayAlpha > 0 ? (
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-slate-950"
+          style={{ opacity: overlayAlpha }}
+        />
+      ) : null}
+
+      {/* 装饰网格（仅在没图片时显示） */}
+      {bgType !== "image" && (
+        <>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_35%),linear-gradient(135deg,_rgba(15,23,42,0.95),_rgba(2,6,23,1))]" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.96)_0%,rgba(2,6,23,0.82)_48%,rgba(2,6,23,0.35)_100%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:88px_88px] opacity-20" />
+        </>
+      )}
+
+      {/* 视频层（可选，覆盖在背景上） */}
       {props.videoUrl ? (
         <video
           autoPlay
@@ -25,14 +98,11 @@ export function HeroVideo(props: HeroVideoProps) {
         >
           <source src={props.videoUrl} type="video/mp4" />
         </video>
-      ) : (
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_35%),linear-gradient(135deg,_rgba(15,23,42,0.95),_rgba(2,6,23,1))]" />
-      )}
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.96)_0%,rgba(2,6,23,0.82)_48%,rgba(2,6,23,0.35)_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:88px_88px] opacity-20" />
+      ) : null}
 
+      {/* 内容层 */}
       <div className="relative mx-auto flex min-h-[100svh] max-w-7xl items-end px-6 pb-24 pt-32 md:pb-28">
-        <div className="max-w-4xl">
+        <div className="anim-stagger max-w-4xl">
           <p className="text-xs font-medium tracking-[0.42em] text-sky-300">
             BAIN BOILER
           </p>

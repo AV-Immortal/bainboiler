@@ -16,7 +16,7 @@ export function ContactCta(props: ContactCtaProps) {
       className="bg-slate-950 px-6 py-24 text-white"
     >
       <div className="mx-auto max-w-7xl overflow-hidden border border-white/10 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_30%),linear-gradient(135deg,_rgba(15,23,42,0.98),_rgba(2,6,23,1))] px-8 py-12 md:px-12 md:py-14">
-        <div className="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-start">
+        <div className="anim-stagger grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-start">
           <div>
             <p className="text-xs font-semibold tracking-[0.34em] text-sky-300">
               {props.eyebrow}

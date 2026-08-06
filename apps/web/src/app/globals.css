@@ -1,5 +1,40 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------ */
+/* 品牌设计令牌：bainboiler 工业锅炉系统                                   */
+/*                                                                       */
+/* 主色：#0F3460（深蓝）—— 信任、专业、工业                                */
+/* 辅色：#E65100（深橙）—— 能量、火焰、CTA                                */
+/* 中性色：#222222（标题）/ #666666（正文）/ #F5F7FA（页面底色）              */
+/*                                                                       */
+/* 关键：只覆盖 slate 深色（700-1000）为深蓝主色，保留浅色为中性灰；         */
+/*       覆盖 sky 色板为深橙辅色。                                          */
+/* ------------------------------------------------------------------ */
+
+@theme {
+  /* 深色 slate → 主色深蓝（仅 700 以上） */
+  --color-slate-700: #1c2942;
+  --color-slate-800: #142039;
+  --color-slate-900: #0f3460; /* 主色 */
+  --color-slate-950: #0a1f3d; /* 主色加深 */
+  --color-slate-1000: #050f1f; /* hero 背景深色 */
+
+  /* 全部 sky → 辅色深橙（保留 sky 全部阶梯以兼容现有用法） */
+  --color-sky-50: #fff7ed;
+  --color-sky-100: #ffe7d0;
+  --color-sky-200: #ffcaa0;
+  --color-sky-300: #ffa460;
+  --color-sky-400: #e65100; /* 主辅色（CTA 按钮） */
+  --color-sky-500: #c54500;
+  --color-sky-600: #9d3700;
+  --color-sky-700: #762a00;
+  --color-sky-800: #4f1c00;
+  --color-sky-900: #281000;
+
+  /* 字体 */
+  --font-sans: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+}
+
 :root {
   color-scheme: light;
 }
@@ -9,7 +44,9 @@ body {
   min-height: 100vh;
   background: #ffffff;
   color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {

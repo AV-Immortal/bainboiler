@@ -8,7 +8,7 @@ type CompanyIntroProps = {
 export function CompanyIntro(props: CompanyIntroProps) {
   return (
     <section className="bg-white px-6 py-24 text-slate-950">
-      <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[1.05fr_0.95fr]">
+      <div className="anim-stagger mx-auto grid max-w-7xl gap-12 md:grid-cols-[1.05fr_0.95fr]">
         <div>
           <p className="text-xs font-semibold tracking-[0.34em] text-sky-700">
             {props.eyebrow}

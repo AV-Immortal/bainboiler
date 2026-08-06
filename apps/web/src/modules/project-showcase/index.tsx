@@ -27,7 +27,7 @@ export function ProjectShowcase(props: ProjectShowcaseProps) {
           </h2>
           <p className="mt-5 text-lg leading-8 text-slate-600">{props.description}</p>
         </div>
-        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+        <div className="anim-stagger mt-12 grid gap-6 lg:grid-cols-2">
           {props.items.map((item) => (
             <a
               key={item.title}

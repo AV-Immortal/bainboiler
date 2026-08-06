@@ -48,9 +48,10 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# apps/web/public 在某些项目里可能不存在，用 RUN 模拟"可选拷贝"语义（COPY 不支持 shell 兜底）
-RUN mkdir -p ./apps/web/public && \
-    cp -R --no-preserve=ownership /app/apps/web/public/. ./apps/web/public/ 2>/dev/null || true
+# 把 builder 阶段生成的 public/ 内容复制到 standalone 输出目录，
+# Next.js server.js 在运行时从该目录提供静态资源。
+# （Dockerfile 之前的"可选拷贝"语义改为显式 COPY，避免空 public 时的回退逻辑）
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 

@@ -110,6 +110,20 @@ function renderHero(m: SanityHeroVideo, locale: CmsLocale) {
       secondaryCta={pick(m.secondaryCta, locale)}
       videoUrl={m.videoUrl ?? undefined}
       posterUrl={m.posterUrl ?? undefined}
+      backgroundType={m.backgroundType ?? undefined}
+      backgroundColor={m.backgroundColor ?? undefined}
+      backgroundGradient={
+        m.backgroundGradient
+          ? {
+              from: m.backgroundGradient.from ?? undefined,
+              to: m.backgroundGradient.to ?? undefined,
+              angle: m.backgroundGradient.angle ?? undefined,
+            }
+          : undefined
+      }
+      // backgroundImage 是 Sanity image 引用（mux imageWithAlt 结构），原样传
+      backgroundImage={m.backgroundImage as never}
+      backgroundOverlayOpacity={m.backgroundOverlayOpacity ?? undefined}
     />
   );
 }

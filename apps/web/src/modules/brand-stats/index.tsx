@@ -5,7 +5,7 @@ type BrandStatsProps = {
 export function BrandStats({ items }: BrandStatsProps) {
   return (
     <section className="relative z-10 -mt-20 px-6 pb-8">
-      <div className="mx-auto grid max-w-7xl gap-px overflow-hidden rounded-sm border border-white/10 bg-slate-900/90 shadow-[0_30px_80px_rgba(2,6,23,0.35)] backdrop-blur md:grid-cols-4">
+      <div className="anim-stagger mx-auto grid max-w-7xl gap-px overflow-hidden rounded-sm border border-white/10 bg-slate-900/90 shadow-[0_30px_80px_rgba(2,6,23,0.35)] backdrop-blur md:grid-cols-4">
         {items.map((item) => (
           <div
             key={`${item.label}-${item.value}`}

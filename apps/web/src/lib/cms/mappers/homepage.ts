@@ -29,6 +29,13 @@ export type SanityHeroVideo = {
   secondaryCtaHref?: string | null;
   videoUrl?: string | null;
   posterUrl?: string | null;
+  // 背景配置（来自 Sanity）
+  backgroundType?: "color" | "gradient" | "image" | null;
+  backgroundColor?: string | null;
+  backgroundGradient?: { from?: string | null; to?: string | null; angle?: number | null } | null;
+  // 保留 Sanity 原始 image 引用，让前端用 urlFor 构造 URL
+  backgroundImage?: unknown;
+  backgroundOverlayOpacity?: number | null;
 };
 
 export type SanityBrandStats = {

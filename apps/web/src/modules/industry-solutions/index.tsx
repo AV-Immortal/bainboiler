@@ -31,7 +31,7 @@ export function IndustrySolutions(props: IndustrySolutionsProps) {
             {props.description}
           </p>
         </div>
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
+        <div className="anim-stagger mt-12 grid gap-6 lg:grid-cols-3">
           {props.items.map((item) => (
             <a
               key={item.title}

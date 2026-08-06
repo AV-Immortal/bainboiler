@@ -14,7 +14,7 @@ export function FeaturedVideo(props: FeaturedVideoProps) {
       id="featured-video"
       className="bg-slate-950 px-6 py-24 text-white"
     >
-      <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.05fr_0.95fr]">
+      <div className="anim-stagger mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.05fr_0.95fr]">
         <div className="relative overflow-hidden border border-white/10 bg-slate-900">
           {props.videoUrl ? (
             <video

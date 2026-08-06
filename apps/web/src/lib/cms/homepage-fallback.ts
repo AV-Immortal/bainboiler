@@ -35,6 +35,12 @@ export const homepageFallbackModules: SanityHomepageModule[] = [
     secondaryCtaHref: null,
     videoUrl: null,
     posterUrl: null,
+    // 默认背景：纯色深蓝（与品牌主色一致）
+    backgroundType: "color",
+    backgroundColor: "#0F3460",
+    backgroundGradient: null,
+    backgroundImage: null,
+    backgroundOverlayOpacity: 50,
   },
   {
     _type: "homepage.brandStats",
