@@ -54,10 +54,10 @@ services:
     image: bainboiler/studio:latest
     container_name: bainboiler-studio
     restart: unless-stopped
-    # 默认不暴露端口，仅通过反向代理（nginx / caddy）访问
-    # 取消下面这行注释可以直接在 localhost:3333 访问
-    # ports:
-    #   - "${STUDIO_PORT:-3333}:3333"
+    # 默认不暴露端口到公网（避免被扫）
+    # 暴露到 127.0.0.1:3333 让本地 Nginx 反代能访问，公网仍扫不到
+    ports:
+      - "127.0.0.1:3333:3333"
     environment:
       NODE_ENV: production
       SANITY_STUDIO_PROJECT_ID: ${NEXT_PUBLIC_SANITY_PROJECT_ID}

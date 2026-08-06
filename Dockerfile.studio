@@ -58,6 +58,7 @@ COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/dist ./dist
 COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/package.json ./package.json
 COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/sanity.config.ts ./sanity.config.ts
 COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/sanity.cli.ts ./sanity.cli.ts
+COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/vite.config.ts ./vite.config.ts
 COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/tsconfig.json ./tsconfig.json
 COPY --from=builder --chown=sanity:nodejs /repo/apps/studio/schemas ./schemas
 # static 目录为空，直接创建即可
@@ -71,4 +72,4 @@ EXPOSE 3333
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3333/ || exit 1
 
-CMD ["npx", "sanity", "start", "--port", "3333", "--host", "0.0.0.0"]
+CMD ["npx", "vite", "preview", "--port", "3333", "--host", "0.0.0.0", "--strictPort"]
