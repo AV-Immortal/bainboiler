@@ -47,6 +47,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.studio
+      args:
+        # build 时注入 Sanity 凭据（嵌入到 studio 的 dist bundle）
+        SANITY_STUDIO_PROJECT_ID: ${NEXT_PUBLIC_SANITY_PROJECT_ID}
+        SANITY_STUDIO_DATASET: ${NEXT_PUBLIC_SANITY_DATASET:-production}
     image: bainboiler/studio:latest
     container_name: bainboiler-studio
     restart: unless-stopped
