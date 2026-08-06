@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: Pick<LocaleLayoutProps, "para
   return buildMetadata({
     locale,
     pathname: "",
-    title: locale === "zh" ? "上海百恩锅炉有限公司" : "BAIN BOILER",
+    title: locale === "zh" ? "百恩锅炉" : "BAIN BOILER",
     description:
       locale === "zh"
         ? "面向全球客户的工业锅炉系统与热能解决方案。"

@@ -11,9 +11,9 @@ export function SiteHeader({ locale }: { locale: AppLocale }) {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5">
         <Link
           href={`/${locale}`}
-          className="text-lg font-semibold tracking-[0.18em] text-white transition hover:text-sky-300"
+          className="flex items-center gap-2 text-base font-semibold tracking-[0.2em] text-white transition hover:text-sky-300"
         >
-          BAIN BOILER
+          {locale === "zh" ? "百恩锅炉" : "BAIN BOILER"}
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-slate-200 md:flex">
           <Link

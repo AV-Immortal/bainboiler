@@ -296,8 +296,8 @@ export const homepageFallbackSeo: Record<
       "Premium industrial boiler systems, thermal engineering, and export-oriented energy solutions for global clients.",
   },
   zh: {
-    title: "BAIN BOILER | 工业锅炉系统与热能方案",
+    title: "百恩锅炉 | 工业锅炉系统与热能方案",
     description:
-      "面向全球客户提供工业锅炉系统、热能工程集成与出口交付支持，体现国际重工企业形象。",
+      "面向全球客户的工业锅炉系统与热能解决方案。Industrial boiler systems and thermal solutions for global clients.",
   },
 };

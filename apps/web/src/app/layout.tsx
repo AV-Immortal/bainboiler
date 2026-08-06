@@ -10,12 +10,12 @@ const SITE_URL =
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "BAIN BOILER | 工业锅炉系统与热能方案",
-    template: "%s | BAIN BOILER",
+    default: "百恩锅炉 | 工业锅炉系统与热能方案",
+    template: "%s",
   },
   description:
     "面向全球客户的工业锅炉系统与热能解决方案。Industrial boiler systems and thermal solutions for global clients.",
-  applicationName: "BAIN BOILER",
+  applicationName: "百恩锅炉",
   keywords: [
     "BAIN BOILER",
     "工业锅炉",
@@ -42,15 +42,15 @@ export const metadata = {
     type: "website",
     locale: "zh_CN",
     alternateLocale: ["en_US"],
-    siteName: "BAIN BOILER",
+    siteName: "百恩锅炉",
     url: SITE_URL,
-    title: "BAIN BOILER | 工业锅炉系统与热能方案",
+    title: "百恩锅炉 | 工业锅炉系统与热能方案",
     description:
       "面向全球客户的工业锅炉系统与热能解决方案。Industrial boiler systems and thermal solutions for global clients.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "BAIN BOILER",
+    title: "百恩锅炉",
     description: "Industrial boiler systems and thermal solutions.",
   },
   formatDetection: {

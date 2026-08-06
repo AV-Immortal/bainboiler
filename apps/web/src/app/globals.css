@@ -49,7 +49,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* 全部 Tailwind 工具类（@layer utilities 内）优先级需高于 base 规则；
+   把全局元素样式放进 @layer base 避免覆盖 .text-white / .text-slate-* 等工具类。 */
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
