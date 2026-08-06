@@ -37,7 +37,8 @@ COPY . .
 
 # sanity build 把 Vite SPA 输出到 apps/studio/dist
 # 用 cd + npx 直接跑，避免 npm workspace 吞掉真实错误输出
-RUN cd apps/studio && npx sanity build
+RUN cd apps/studio && npx sanity build \
+ && node scripts/precompress.mjs dist
 
 # ---- Stage 3: runner ----
 FROM node:20-alpine AS runner
