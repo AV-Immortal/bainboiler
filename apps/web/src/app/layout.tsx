@@ -119,6 +119,12 @@ export const metadata = {
     email: false,
     address: false,
   },
+  // 第三方站长平台验证 tag（不走 Next.js metadata 标准字段，放 other）
+  // Bing: https://www.bing.com/webmasters
+  // Google: 改用 Search Console 提供的 HTML tag 时也加在这里
+  other: {
+    "msvalidate.01": "1269BD0D5E03E312A0ABFB4F3C305A62",
+  },
   // icons：多尺寸圆角 webp（透明背景），浏览器按设备自动选择
   icons: {
     icon: [
