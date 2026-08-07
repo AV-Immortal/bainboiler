@@ -76,6 +76,94 @@ export function breadcrumbJsonLd(crumbs: Crumb[]) {
 }
 
 /* ------------------------------------------------------------------ */
+/* 详情页：Product 结构化数据                                            */
+/* ------------------------------------------------------------------ */
+
+export type ProductJsonLdInput = {
+  /** 产品名（必填） */
+  name: string;
+  /** 产品描述（必填） */
+  description: string;
+  /** 详情页 URL 路径（必填，相对于站点根，会自动加 SITE_URL） */
+  urlPath: string;
+  /** 产品主图（绝对 URL） */
+  image?: string | null;
+  /** 类目名称（可选） */
+  category?: string | null;
+  /** SKU / 型号（可选） */
+  sku?: string | null;
+  /** 品牌名（默认 BAIN BOILER） */
+  brand?: string;
+  /** 规格（键值对），可作为 additionalProperty 注入 */
+  specs?: Array<{ label: string; value: string }>;
+};
+
+export function productJsonLd(input: ProductJsonLdInput) {
+  const url = input.urlPath.startsWith("http")
+    ? input.urlPath
+    : `${SITE_URL}${input.urlPath}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: input.name,
+    description: input.description,
+    url,
+    ...(input.image ? { image: [input.image] } : {}),
+    ...(input.category ? { category: input.category } : {}),
+    ...(input.sku ? { sku: input.sku, mpn: input.sku } : {}),
+    brand: {
+      "@type": "Brand",
+      name: input.brand ?? "BAIN BOILER",
+    },
+    manufacturer: {
+      "@id": `${SITE_URL}#organization`,
+    },
+    ...(input.specs && input.specs.length > 0
+      ? {
+          additionalProperty: input.specs
+            .filter((s) => s.label && s.value)
+            .map((s) => ({
+              "@type": "PropertyValue",
+              name: s.label,
+              value: s.value,
+            })),
+        }
+      : {}),
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* FAQ 结构化数据（FAQPage）                                              */
+/* ------------------------------------------------------------------ */
+
+export type FaqItem = { question: string; answer: string };
+
+/**
+ * schema.org FAQPage：让 Google/Bing 在搜索结果中直接展示问答富媒体卡片。
+ * 同一页面里也可见地渲染一份（见 <FaqSection>），避免结构化数据与正文脱节。
+ */
+export function faqJsonLd(items: FaqItem[]) {
+  const cleaned = (items ?? []).filter(
+    (it) => it.question?.trim() && it.answer?.trim(),
+  );
+  if (cleaned.length === 0) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: cleaned.map((it) => ({
+      "@type": "Question",
+      name: it.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: it.answer,
+      },
+    })),
+  };
+}
+
+/* ------------------------------------------------------------------ */
 /* 渲染 <script> 节点                                                   */
 /* ------------------------------------------------------------------ */
 

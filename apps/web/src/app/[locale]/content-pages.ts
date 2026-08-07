@@ -63,14 +63,14 @@ const staticPageCopy: Record<
 
 const productDetailFallbackCopy: Record<AppLocale, ContentPageCopy> = {
   en: {
-    title: "Product Detail",
+    title: "Industrial boiler system",
     description:
-      "This draft product route is available so CMS-backed specifications, media, and download assets can be connected in a later task.",
+      "Industrial boiler and thermal system details from BAIN BOILER. Browse specifications, applications, and project references to evaluate the right fit for your plant.",
   },
   zh: {
-    title: "产品详情",
+    title: "工业锅炉系统",
     description:
-      "该产品详情路由已准备就绪，后续任务会在此接入 CMS 管理的规格参数、图片视频与资料下载内容。",
+      "百恩锅炉工业锅炉与热能系统详情页：了解规格参数、适用工况与典型项目案例，为您的工厂选择合适的方案。",
   },
 };
 
@@ -102,10 +102,7 @@ export function getProductDetailPageCopy(
   const productName = formatProductSlug(slug);
 
   return {
-    title: productName || fallback.title,
-    description:
-      locale === "zh"
-        ? `当前详情页已匹配产品草稿路由“${slug}”，后续将接入该产品的完整 CMS 内容。`
-        : `The draft detail route for "${slug}" is active and will be connected to full CMS-managed product content in a later task.`,
+    title: productName ? `${productName} | ${fallback.title}` : fallback.title,
+    description: fallback.description,
   };
 }

@@ -11,13 +11,117 @@
     "en": "EN"
   },
   "footer": {
-    "companyName": "Shanghai Baien Boiler Co., Ltd.",
+    "companyName": "Shanghai Bain Boiler Co., Ltd.",
     "brand": "BAIN BOILER",
+    "companyTagline": "Industrial boiler systems & thermal solutions",
+    "companyDescription": "Manufacturer of steam, hot water, and thermal oil boiler systems for industrial clients worldwide, with engineering, fabrication, and project delivery support.",
+    "quickLinks": "Quick Links",
+    "resources": "Resources",
+    "contact": "Contact",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "whatsappLabel": "WhatsApp",
+    "wechatLabel": "WeChat",
+    "contactEmail": "sales@bainboiler.com",
+    "contactPhone": "+86 21-XXXX-XXXX",
+    "contactWhatsapp": "+86 138-XXXX-XXXX",
+    "contactWechat": "bainboiler",
+    "addressLabel": "Address",
+    "contactAddress": "Shanghai, China · Manufacturing & project delivery base",
+    "copyright": "Shanghai Bain Boiler Co., Ltd. All rights reserved.",
+    "rightsReserved": "All rights reserved.",
     "privacyPolicy": "Privacy Policy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "icpPlaceholder": "Shanghai ICP No. XXXXXXXX"
   },
   "home": {
     "heroTitle": "Industrial boiler systems and thermal solutions for global clients.",
     "heroDescription": "This baseline now includes locale routing, middleware auto-redirect, and the shared site shell. Later tasks can build homepage modules and CMS integration on top of it."
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "products": "Products",
+    "solutions": "Solutions",
+    "projects": "Projects",
+    "news": "News",
+    "videos": "Videos",
+    "downloads": "Downloads"
+  },
+  "seo": {
+    "products": {
+      "intro": "BAIN BOILER designs and manufactures industrial boiler systems and thermal solutions covering oil-fired, gas-fired, coal-fired, biomass-fired, and waste heat recovery units. Our WNS, SZS, DZL, and LHS series span 0.3–100 t/h steam, 0.7–70 MW hot water, and 200–14 M kcal thermal oil outputs, serving textile, dyeing, chemical, food, pharmaceutical, paper, building material, hospital, hotel and district heating industries in 30+ countries.",
+      "boilerTypes": {
+        "title": "Industrial boiler series at a glance",
+        "subtitle": "Map the right model to your fuel, structure, and capacity requirements.",
+        "items": [
+          { "label": "WNS oil / gas steam boiler", "value": "Three-pass wet-back design, 0.3–20 t/h, thermal efficiency 95%+, low-NOx ≤30 mg/Nm³." },
+          { "label": "SZS oil / gas steam boiler", "value": "Double-drum longitudinal D-type layout, 10–100 t/h, ideal for large industrial steam demand." },
+          { "label": "DZL coal-fired steam boiler", "value": "Single-drum chain-grate layout, 1–20 t/h, compatible with bituminous, anthracite and biomass briquettes." },
+          { "label": "LHS vertical oil / gas boiler", "value": "0.1–4 t/h compact footprint, fast installation for small plants and commercial heating." },
+          { "label": "CLHS atmospheric hot water boiler", "value": "0.35–5.6 MW vertical atmospheric hot water boiler for residential heating, bathing, and greenhouses." },
+          { "label": "YGW / YLW thermal oil heater", "value": "200–14 M kcal organic heat carrier, working temperature up to 320–400°C." },
+          { "label": "SZL biomass boiler", "value": "2–20 t/h dedicated for biomass pellets and briquettes, environmental compliant." },
+          { "label": "Waste heat recovery boiler", "value": "Capture flue gas, kiln and chemical waste heat into steam or hot water to lift overall energy efficiency." }
+        ]
+      },
+      "industries": {
+        "title": "Typical industrial boiler applications",
+        "subtitle": "BAIN BOILER exports to 30+ countries, serving common industrial thermal scenarios.",
+        "items": [
+          "Textile & dyeing – finishing, setting, drying",
+          "Food processing – cooking, sterilization, baking",
+          "Chemical – reactor, distillation, concentration",
+          "Pharmaceutical – extraction, concentration, sterilization",
+          "Paper – drying, calendering, sizing",
+          "Building materials – curing, drying, AAC blocks",
+          "Hospital – sterilization, laundry, heating",
+          "Hotel & commercial complex – central heating, domestic hot water",
+          "District heating – city zones and industrial parks",
+          "EPC – package supply, OEM and overseas projects"
+        ]
+      },
+      "why": {
+        "title": "Why choose BAIN BOILER",
+        "subtitle": "From design and fabrication to export and commissioning, we own every step.",
+        "items": [
+          { "label": "15+ years of industrial boiler experience", "value": "Serving 30+ countries with mature quality and process control systems." },
+          { "label": "ASME / CE / EAC certified", "value": "Design and manufacture to destination-country standards with one-stop customs and inspection support." },
+          { "label": "Low-NOx and energy-saving package", "value": "Standard low-NOx burner plus condensing waste heat recovery, 95%+ thermal efficiency." },
+          { "label": "Plant-wide EPC delivery", "value": "Engineering, fabrication, shipping, installation, commissioning and training, end to end." },
+          { "label": "24h global after-sales response", "value": "Online technical guidance plus spare parts supply, minimizing customer downtime." }
+        ]
+      },
+      "faq": {
+        "title": "Frequently asked questions on industrial boilers",
+        "items": [
+          {
+            "question": "What are the common types of industrial steam boilers?",
+            "answer": "By fuel: WNS / SZS for oil and gas, DZL / SZL for coal and biomass. By capacity: 0.3–100 t/h steam, 0.7–70 MW hot water, and 200–14 M kcal thermal oil heaters. BAIN BOILER's four main series cover the vast majority of industrial thermal scenarios."
+          },
+          {
+            "question": "What parameters are required for boiler selection?",
+            "answer": "Please share fuel type (natural gas, light oil, heavy oil, coal, biomass), rated evaporation or thermal output, working pressure and temperature for steam / hot water / thermal oil, installation altitude, and local emission limits. BAIN BOILER's engineering team can issue a selection proposal and quotation quickly based on these inputs."
+          },
+          {
+            "question": "What is the thermal efficiency of a WNS gas steam boiler?",
+            "answer": "BAIN BOILER's WNS series ships with a condensing waste heat recovery unit, achieving 95%+ thermal efficiency, with NOx controlled within 30 mg/Nm³ to meet the strictest low-NOx standards."
+          },
+          {
+            "question": "Do you support export and ocean shipping?",
+            "answer": "Yes. We hold ASME, CE, EAC and other major export certifications, and have long-term EPC partners in Southeast Asia, the Middle East, Africa, South America and the CIS. We can provide factory testing, container loading, ocean freight and customs clearance in one package."
+          },
+          {
+            "question": "What is the typical lead time for an industrial boiler?",
+            "answer": "Standard models take around 25–40 working days. Large-tonnage SZS series or non-standard custom units take around 50–90 working days, depending on the order schedule and production load."
+          }
+        ]
+      }
+    },
+    "solutions": {
+      "intro": "BAIN BOILER delivers application-focused industrial boiler and thermal system solutions for textile, dyeing, chemical, food, pharmaceutical, paper, building material, hospital, and district heating customers, covering design, fabrication, installation, commissioning and lifecycle service."
+    },
+    "projects": {
+      "intro": "BAIN BOILER's overseas project footprint spans 30+ countries, with references ranging from single-unit supply to full plant EPC delivery, including export certification, shipping, customs and on-site commissioning."
+    }
   }
 }
