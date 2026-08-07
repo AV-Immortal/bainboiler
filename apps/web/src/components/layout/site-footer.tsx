@@ -87,7 +87,7 @@ export function SiteFooter({ locale }: { locale: AppLocale }) {
               <ContactLine
                 label={messages.footer.phoneLabel}
                 value={messages.footer.contactPhone}
-                href={`tel:${messages.footer.contactPhone.replace(/\s+/g, "")}`}
+                href={`tel:${messages.footer.contactPhone.replace(/[\s-]/g, "")}`}
                 icon="phone"
               />
               <ContactLine
