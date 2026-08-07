@@ -36,7 +36,7 @@ export function IndustrySolutions(props: IndustrySolutionsProps) {
             <a
               key={item.title}
               href={item.href ?? defaultHref}
-              className="group border border-white/10 bg-white/3 p-8 transition hover:-translate-y-1 hover:border-sky-300/30 hover:bg-white/5"
+              className="card-hover group border border-white/10 bg-white/3 p-8"
             >
               <p className="text-xs uppercase tracking-[0.28em] text-slate-400">
                 {item.meta ?? "Industry"}

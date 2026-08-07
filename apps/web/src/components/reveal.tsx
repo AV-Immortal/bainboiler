@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * 视口进入动画相关
  *
@@ -7,6 +9,7 @@
  */
 
 import type { ReactNode } from "react";
+import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
 /* ------------------------------------------------------------------ */
@@ -39,6 +42,74 @@ export function Reveal({
       {children}
     </Component>
   );
+}
+
+/* ------------------------------------------------------------------ */
+/* 1b. <RevealOnView> 客户端版：进入视口才触发                              */
+/* ------------------------------------------------------------------ */
+
+type RevealTag = "div" | "section" | "article" | "header" | "footer" | "main" | "aside" | "ul" | "ol" | "li";
+
+/**
+ * 用 IntersectionObserver 检测元素进入视口后再挂动画 class。
+ * 进入前元素是不可见状态（opacity 0），避免「页面下方内容已经动画播完」的问题。
+ *
+ * 注意：服务端渲染时会输出一个隐藏的容器，hydration 后才挂 class 触发。
+ */
+export function RevealOnView({
+  children,
+  variant = "fade-up",
+  as = "div",
+  className = "",
+  threshold = 0.15,
+  once = true,
+  rootMargin = "0px 0px -8% 0px",
+}: {
+  children: ReactNode;
+  variant?: RevealVariant;
+  as?: RevealTag;
+  className?: string;
+  threshold?: number;
+  once?: boolean;
+  rootMargin?: string;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            if (once) observer.disconnect();
+          } else if (!once) {
+            setVisible(false);
+          }
+        }
+      },
+      { threshold, rootMargin },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold, once, rootMargin]);
+
+  const fullClassName = [
+    "reveal-on-view",
+    visible ? variantClass[variant] : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  // 动态 tag 通过 React.createElement 渲染，绕过联合类型 props 推断问题
+  return React.createElement(as, { ref, className: fullClassName }, children);
 }
 
 /* ------------------------------------------------------------------ */

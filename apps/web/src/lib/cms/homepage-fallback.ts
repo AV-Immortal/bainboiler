@@ -196,6 +196,25 @@ export const homepageFallbackModules: SanityHomepageModule[] = [
     ],
   },
   {
+    _type: "homepage.globalPresence",
+    _key: "fallback-global-presence",
+    eyebrow: ls("全球服务网络", "GLOBAL PRESENCE"),
+    title: ls(
+      "以中国为基地，服务全球工业市场。",
+      "Engineering from China, delivering for global industry.",
+    ),
+    description: lt(
+      "百恩锅炉总部位于中国，依托完整制造体系与项目交付能力，为海外工厂、EPC 团队和渠道伙伴提供锅炉系统与配套服务，覆盖方案、出口、调试与售后协同。",
+      "Headquartered in China, BAIN BOILER supports plant operators, EPC teams, and overseas partners with boiler systems, project execution, and commissioning coordination across export markets.",
+    ),
+    stats: [
+      { label: ls("总部基地", "Headquarters"), value: "中国" },
+      { label: ls("出口市场", "Export Markets"), value: "30+" },
+      { label: ls("服务行业", "Industry Coverage"), value: "多领域" },
+      { label: ls("交付模式", "Delivery"), value: "端到端" },
+    ],
+  },
+  {
     _type: "homepage.certificatesExport",
     _key: "fallback-certificates",
     eyebrow: ls("质量与出口", "QUALITY & EXPORT"),

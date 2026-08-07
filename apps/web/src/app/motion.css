@@ -74,6 +74,161 @@
 .anim-stagger > *:nth-child(5) { animation-delay: 320ms; }
 .anim-stagger > *:nth-child(6) { animation-delay: 400ms; }
 
+/* ------------------------------------------------------------------ */
+/* 滚动到视口才触发的容器（RevealOnView 用）                                */
+/* ------------------------------------------------------------------ */
+.reveal-on-view {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.reveal-on-view.anim-fade-up {
+  animation: bain-fade-up 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.reveal-on-view.anim-fade-in {
+  animation: bain-fade-in 700ms ease-out both;
+}
+.reveal-on-view.anim-slide-in-left {
+  animation: bain-slide-in-left 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.reveal-on-view.anim-stagger > * {
+  animation: bain-fade-up 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.reveal-on-view.anim-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.reveal-on-view.anim-stagger > *:nth-child(2) { animation-delay: 80ms; }
+.reveal-on-view.anim-stagger > *:nth-child(3) { animation-delay: 160ms; }
+.reveal-on-view.anim-stagger > *:nth-child(4) { animation-delay: 240ms; }
+.reveal-on-view.anim-stagger > *:nth-child(5) { animation-delay: 320ms; }
+.reveal-on-view.anim-stagger > *:nth-child(6) { animation-delay: 400ms; }
+
+/* ------------------------------------------------------------------ */
+/* Hero 背景流动渐变：多个 gradient layer 缓慢漂移                          */
+/* ------------------------------------------------------------------ */
+@keyframes bain-gradient-drift {
+  0%   { background-position: 0% 0%, 0% 0%, 0 0, 0 0; }
+  50%  { background-position: 100% 100%, 50% 80%, 24px 24px, -24px -24px; }
+  100% { background-position: 0% 0%, 0% 0%, 0 0, 0 0; }
+}
+.hero-gradient-drift {
+  background-size: 200% 200%, 200% 200%, 88px 88px, 88px 88px;
+  animation: bain-gradient-drift 18s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/* 卡片悬浮：渐变 + 提升 + 阴影增强（统一卡片 hover 效果）                    */
+/* ------------------------------------------------------------------ */
+.card-hover {
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 320ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.card-hover:hover {
+  transform: translate3d(0, -4px, 0) scale(1.012);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.14),
+              0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* ------------------------------------------------------------------ */
+/* GlobalPresence：地球定位 + 中国标记脉冲                                */
+/* 全部基于 transform / opacity，GPU 合成层，不触发 layout                */
+/* ------------------------------------------------------------------ */
+
+/* 标记柔光晕：持续呼吸 */
+@keyframes bain-marker-breathe {
+  0%, 100% { transform: scale(0.85); opacity: 0.55; }
+  50%      { transform: scale(1.15); opacity: 0.95; }
+}
+.marker-halo {
+  animation: bain-marker-breathe 3.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* 中心实心点：细微缩放呼吸，强化"在跳动"的感知 */
+@keyframes bain-marker-core {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.18); }
+}
+.marker-core {
+  animation: bain-marker-core 2.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* 脉冲扩散环：从中心向外扩散并淡出，3 圈错开 */
+@keyframes bain-marker-pulse {
+  0%   { transform: scale(0.6); opacity: 0.85; stroke-width: 1.5; }
+  80%  { opacity: 0; }
+  100% { transform: scale(5);   opacity: 0;   stroke-width: 0.4; }
+}
+.pulse-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bain-marker-pulse 2.6s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  will-change: transform, opacity;
+}
+.pulse-ring-1 { animation-delay: 0s; }
+.pulse-ring-2 { animation-delay: 0.85s; }
+.pulse-ring-3 { animation-delay: 1.7s; }
+
+/* 网络点位：缓慢淡入淡出，制造"数据流动"感 */
+@keyframes bain-net-flicker {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.9; }
+}
+.net-dot {
+  animation: bain-net-flicker 4.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* 标签：轻微"光标闪烁"，模拟雷达定位 */
+@keyframes bain-label-blink {
+  0%, 60%, 100% { opacity: 1; }
+  70%, 90%      { opacity: 0.55; }
+}
+.marker-label {
+  animation: bain-label-blink 3.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* 顶部柔光带：缓慢旋转一周（30s） */
+@keyframes bain-scan-rotate {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.scan-arc {
+  transform-box: fill-box;
+  transform-origin: 200px 200px;
+  animation: bain-scan-rotate 36s linear infinite;
+  will-change: transform;
+}
+
+/* 整球：极轻微的呼吸（仅 ±1%），避免视觉单调 */
+@keyframes bain-globe-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.012); }
+}
+.globe-svg {
+  animation: bain-globe-breathe 7s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* 外圈柔光：与整球同频反向呼吸，强化"在悬浮"感 */
+@keyframes bain-globe-halo {
+  0%, 100% { transform: scale(0.95); opacity: 0.5; }
+  50%      { transform: scale(1.05); opacity: 0.8; }
+}
+.globe-halo {
+  animation: bain-globe-halo 7s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
 /* 可访问性：用户偏好降低动效时全部禁用 */
 @media (prefers-reduced-motion: reduce) {
   .anim-fade-up,
@@ -82,6 +237,29 @@
   .anim-pulse-accent,
   .anim-stagger > * {
     animation: none !important;
+  }
+  .reveal-on-view,
+  .reveal-on-view.anim-fade-up,
+  .reveal-on-view.anim-fade-in,
+  .reveal-on-view.anim-slide-in-left,
+  .reveal-on-view.anim-stagger > *,
+  .hero-gradient-drift,
+  .card-hover,
+  .marker-halo,
+  .marker-core,
+  .pulse-ring,
+  .pulse-ring-1,
+  .pulse-ring-2,
+  .pulse-ring-3,
+  .net-dot,
+  .marker-label,
+  .scan-arc,
+  .globe-svg,
+  .globe-halo {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
   }
   * {
     transition-duration: 0.01ms !important;

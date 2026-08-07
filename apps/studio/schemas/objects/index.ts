@@ -14,6 +14,7 @@ import { companyIntro } from "./homepage/company-intro";
 import { productCategories } from "./homepage/product-categories";
 import { industrySolutions } from "./homepage/industry-solutions";
 import { projectShowcase } from "./homepage/project-showcase";
+import { globalPresence } from "./homepage/global-presence";
 import { certificatesExport } from "./homepage/certificates-export";
 import { featuredVideo } from "./homepage/featured-video";
 import { latestNews } from "./homepage/latest-news";
@@ -40,13 +41,14 @@ export const schemaTypes = [
   statItem,
   cardItem,
 
-  // 10 个 homepage module
+  // 11 个 homepage module
   heroVideo,
   brandStats,
   companyIntro,
   productCategories,
   industrySolutions,
   projectShowcase,
+  globalPresence,
   certificatesExport,
   featuredVideo,
   latestNews,

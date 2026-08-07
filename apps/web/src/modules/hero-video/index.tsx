@@ -1,3 +1,4 @@
+import { TextReveal } from "@/components/text-reveal";
 import { urlFor } from "../../../sanity/image";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
@@ -77,10 +78,10 @@ export function HeroVideo(props: HeroVideoProps) {
         />
       ) : null}
 
-      {/* 装饰网格（仅在没图片时显示） */}
+      {/* 装饰网格（仅在没图片时显示，带流动动画） */}
       {bgType !== "image" && (
         <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_35%),linear-gradient(135deg,_rgba(15,23,42,0.95),_rgba(2,6,23,1))]" />
+          <div className="absolute inset-0 hero-gradient-drift bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_35%),linear-gradient(135deg,_rgba(15,23,42,0.95),_rgba(2,6,23,1))]" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.96)_0%,rgba(2,6,23,0.82)_48%,rgba(2,6,23,0.35)_100%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:88px_88px] opacity-20" />
         </>
@@ -106,9 +107,11 @@ export function HeroVideo(props: HeroVideoProps) {
           <p className="text-xs font-medium tracking-[0.42em] text-sky-300">
             BAIN BOILER
           </p>
-          <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.05] text-white md:text-7xl">
-            {props.headline}
-          </h1>
+          <TextReveal
+            as="h1"
+            text={props.headline}
+            className="mt-6 block max-w-4xl text-5xl font-semibold leading-[1.05] text-white md:text-7xl"
+          />
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-200 md:text-xl">
             {props.subheadline}
           </p>

@@ -8,6 +8,7 @@ import type {
   SanityCertificatesExport,
   SanityFeaturedVideo,
   SanityContactCta,
+  SanityGlobalPresence,
   SanityStatItem,
   SanityCardItem,
 } from "./mappers/homepage";
@@ -17,6 +18,7 @@ import { CertificatesExport } from "@/modules/certificates-export";
 import { CompanyIntro } from "@/modules/company-intro";
 import { ContactCta } from "@/modules/contact-cta";
 import { FeaturedVideo } from "@/modules/featured-video";
+import { GlobalPresence } from "@/modules/global-presence";
 import { HeroVideo } from "@/modules/hero-video";
 import { IndustrySolutions } from "@/modules/industry-solutions";
 import { LatestNews } from "@/modules/latest-news";
@@ -87,6 +89,8 @@ export function SanityModule({
             return renderCardList(m, locale, "latest-news");
           case "homepage.contactCta":
             return renderContactCta(m, locale);
+          case "homepage.globalPresence":
+            return renderGlobalPresence(m, locale);
           default:
             return null;
         }
@@ -246,6 +250,19 @@ function renderContactCta(m: SanityContactCta, locale: CmsLocale) {
       description={pick(m.description, locale)}
       primaryCta={pick(m.primaryCta, locale)}
       secondaryCta={pick(m.secondaryCta, locale)}
+    />
+  );
+}
+
+function renderGlobalPresence(m: SanityGlobalPresence, locale: CmsLocale) {
+  return (
+    <GlobalPresence
+      key={m._key}
+      locale={locale}
+      eyebrow={pick(m.eyebrow, locale)}
+      title={pick(m.title, locale)}
+      description={pick(m.description, locale)}
+      stats={mapStats(m.stats, locale)}
     />
   );
 }

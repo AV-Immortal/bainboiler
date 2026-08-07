@@ -31,7 +31,7 @@ export function ProductCategories(props: ProductCategoriesProps) {
             <a
               key={item.title}
               href={item.href ?? defaultHref}
-              className="group block border border-slate-200 bg-white p-8 transition hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]"
+              className="card-hover group block border border-slate-200 bg-white p-8"
             >
               <p className="text-xs uppercase tracking-[0.28em] text-sky-700">
                 {item.meta ?? "Category"}

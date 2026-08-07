@@ -97,6 +97,15 @@ export type SanityContactCta = {
   secondaryCta?: LocaleString;
 };
 
+export type SanityGlobalPresence = {
+  _type: "homepage.globalPresence";
+  _key: string;
+  eyebrow?: LocaleString;
+  title?: LocaleString;
+  description?: LocaleText;
+  stats?: SanityStatItem[] | null;
+};
+
 export type SanityHomepageModule =
   | SanityHeroVideo
   | SanityBrandStats
@@ -104,7 +113,8 @@ export type SanityHomepageModule =
   | SanityCardList
   | SanityCertificatesExport
   | SanityFeaturedVideo
-  | SanityContactCta;
+  | SanityContactCta
+  | SanityGlobalPresence;
 
 export type SanityHomepageResult = {
   slug: string;

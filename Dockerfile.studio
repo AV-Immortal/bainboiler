@@ -27,6 +27,10 @@ FROM node:20-alpine AS builder
 WORKDIR /repo
 ENV NODE_ENV=production
 
+# 限制 Node 堆内存。服务器仅 3.6GB RAM，sanity build(Vite+esbuild) 默认
+# 会尝试占用 2GB+，与 web 容器叠加后会被 OOM killer 杀掉。
+ENV NODE_OPTIONS=--max-old-space-size=1536
+
 ARG SANITY_STUDIO_PROJECT_ID=placeholder
 ARG SANITY_STUDIO_DATASET=production
 ENV SANITY_STUDIO_PROJECT_ID=$SANITY_STUDIO_PROJECT_ID

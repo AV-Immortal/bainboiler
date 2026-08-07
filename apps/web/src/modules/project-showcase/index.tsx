@@ -32,7 +32,7 @@ export function ProjectShowcase(props: ProjectShowcaseProps) {
             <a
               key={item.title}
               href={item.href ?? defaultHref}
-              className="relative overflow-hidden border border-slate-200 bg-slate-950 p-8 text-white transition hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
+              className="card-hover group relative overflow-hidden border border-slate-200 bg-slate-950 p-8 text-white"
             >
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(56,189,248,0.22),_transparent_35%)]" />
               <div className="relative">

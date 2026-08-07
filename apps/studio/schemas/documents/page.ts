@@ -35,6 +35,7 @@ export const page = defineType({
         { type: "homepage.productCategories" },
         { type: "homepage.industrySolutions" },
         { type: "homepage.projectShowcase" },
+        { type: "homepage.globalPresence" },
         { type: "homepage.certificatesExport" },
         { type: "homepage.featuredVideo" },
         { type: "homepage.latestNews" },

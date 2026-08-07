@@ -38,6 +38,10 @@ export const homepageQuery = `
         items[]{ title, description, meta, href,
                  "coverImageUrl": coverImage.image.asset->url }
       },
+      _type == "homepage.globalPresence" => {
+        eyebrow, title, description,
+        stats[]{ label, value }
+      },
       _type == "homepage.certificatesExport" => {
         eyebrow, title, description,
         items[], primaryCta
