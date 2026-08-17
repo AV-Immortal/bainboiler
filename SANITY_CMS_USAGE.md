@@ -12,14 +12,14 @@
 
 | 问题 | 答案 |
 |---|---|
-| 我要改的内容，**前端有显示吗**？ | **查下表**（下面 7 个 Content 入口） |
+| 我要改的内容，**前端有显示吗**？ | **查下表**（下面 8 个 Content 入口） |
 | 我改后**没看到前端变化**？ | 大概率是该字段前端**没接**（schema 配了但 React 组件不用）—— 看下面"⚠️ 注意" |
-| 想改 logo/电话/邮箱/公司名？ | **CMS 改不了**——这些是硬编码，要改代码 |
+| 想改 logo/电话/邮箱/公司名？ | 邮箱/电话/微信 在 `messages/zh.json` 和 `en.json` 的 `footer` 段；logo / 品牌名要改代码 |
 | 我想看现在的内容？ | 改完后**等 60 秒** + 浏览器**强刷**（Ctrl+Shift+R）|
 
 ---
 
-## 📋 Content 7 个类型 → 前端对应关系
+## 📋 Content 8 个类型 → 前端对应关系
 
 ### 1. 📄 **Page**（最重要）
 - **导航位置**：Content → Page
@@ -27,8 +27,8 @@
 - **前端对应**：整张首页（`bainboiler.com/zh`）
 - **打开后**：
   - `title` / `slug` / `seo` 三个字段
-  - **`modules` 数组**（**核心**）：拖拽决定首页 10 个区块的**顺序**
-  - 点 `+ Add item` 加新模块（9 种类型，下面会讲）
+  - `modules` 数组**（核心**）：拖拽决定首页 11 个区块的**顺序**
+  - 点 `+ Add item` 加新模块（11 种类型，下面会讲）
 - **SEO**：`seo.title.zh` = 浏览器标签标题，`seo.description.zh` = 搜索结果描述
 - **改完注意**：modules 数组里**展开每个 module 才能改字段**
 
@@ -98,10 +98,10 @@
 
 ---
 
-## 🧩 Page 文档的 9 个 Module（首页区块）
+## 🧩 Page 文档的 11 个 Module（首页区块）
 
 > **位置**：打开 `Page` 文档 → `home` → 展开 `modules` 数组
-> **加新区块**：`modules` 数组点 `+ Add item` → 选 9 种之一
+> **加新区块**：`modules` 数组点 `+ Add item` → 选 11 种之一
 
 ### 1. `homepage.heroVideo`（首页最上面那个大图区）
 - **对应前端**：首页第一屏
@@ -146,6 +146,19 @@
 ### 8. `homepage.featuredVideo`（首页中段的视频块）
 
 ### 9. `homepage.contactCta`（"立即询盘" 那一块）
+
+### 10. `homepage.latestNews`（首页新闻预览区）
+
+### 11. `homepage.globalPresence`（"以中国为基地，服务全球" 那块）
+- **对应前端**：首页第 7 段，深色 slate 背景
+- **左侧**：
+  - `eyebrow.zh/en` — 小字（默认 "全球服务网络" / "GLOBAL PRESENCE"）
+  - `title.zh/en` — 主标题
+  - `description.zh/en` — 描述段落
+  - `stats[]` — 4 个数据项（`label` + `value`）
+- **右侧**：SVG 地球 + 中国定位脉冲（**地球位置固定为中国 110°E / 34°N**，不在 CMS 中配置）
+- **改标题/描述/数据项**：直接改对应字段
+- **改地球位置**：要改代码，开发者处理
 
 ---
 
@@ -196,9 +209,9 @@
 |---|---|
 | 网站名字（BAIN BOILER）| 开发者 |
 | 公司 Logo | 开发者 |
-| 联系电话 / 邮箱 / 微信 | 开发者（+ Site Setting 同步）|
+| 联系电话 / 邮箱 / 微信 | 开发者（改 `apps/web/messages/{zh,en}.json` 的 `footer` 段）|
 | 导航栏（5 个菜单）| 开发者 |
-| Footer 链接 | 开发者 |
+| Footer 链接 | 开发者（改 `apps/web/messages/{zh,en}.json` 的 `nav` + `footer` 段）|
 | 产品 / 案例 / 方案 / 新闻 **详情页** | 开发者（详情页都是硬编码文案）|
 | 整体配色（主色 / 辅色）| 开发者 |
 | 字体 | 开发者 |
@@ -210,12 +223,16 @@
 
 **Studio（CMS 端）**：
 - `apps/studio/schemas/documents/` — 8 个文档类型
-- `apps/studio/schemas/objects/` — 共享字段 + 10 个首页模块
+- `apps/studio/schemas/objects/` — 共享字段 + 11 个首页模块
 
 **Web 端（前端）**：
 - `apps/web/sanity/queries.ts` — GROQ 查询
 - `apps/web/src/lib/cms/get-homepage.ts` — 首页数据获取
 - `apps/web/src/lib/cms/get-list-page.ts` — 列表数据获取
-- `apps/web/src/lib/cms/sanity-block-renderer.tsx` — 10 个 module 路由
+- `apps/web/src/lib/cms/get-product.ts` — 详情数据获取
+- `apps/web/src/lib/cms/sanity-block-renderer.tsx` — 11 个 module 路由
 - `apps/web/src/lib/cms/homepage-fallback.ts` — 兜底数据（CMS 断线时用）
-- `apps/web/src/modules/` — 10 个首页组件
+- `apps/web/src/lib/seo/build-metadata.ts` — 统一 metadata 生成
+- `apps/web/src/lib/seo/json-ld.tsx` — 结构化数据（Organization / Product / FAQ / Breadcrumb）
+- `apps/web/messages/{zh,en}.json` — i18n 文案（footer / nav / hero / about 等）
+- `apps/web/src/modules/` — 11 个首页组件

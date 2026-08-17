@@ -277,3 +277,39 @@ sudo certbot --nginx -d bainboiler.com -d www.bainboiler.com
 - 确认中英文路径都输出正确 `canonical` 与 `alternate metadata`
 - Docker 方式：`docker compose ps` 显示两个服务都是 `healthy`
 - 传统方式：`pm2 list` 显示 web 进程 `online`
+
+---
+
+## 上线后 SEO 平台验证（生产环境一次性配置）
+
+详见 [docs/SEO.md](./SEO.md)，此处只列关键节点：
+
+| 平台 | 验证方式 | 提交入口 |
+|---|---|---|
+| Bing Webmaster | HTML meta tag（`msvalidate.01`）| 自动通过 tag 验证，无需手动 |
+| IndexNow | key file + API | 发布后调 `pingIndexNow()` 推送新 URL |
+| 百度站长平台 | HTML 文件（`baidu_verify_*.html`）| 文件验证通过后，提交 sitemap / 用 API 推 URL |
+| Google Search Console | HTML meta tag（`google-site-verification`）| 同 Bing 流程 |
+
+> **已知坑**：Next.js middleware 把根域 307 重定向到 `/en`，**百度 / Bing 的 HTML meta tag 验证可能失败**（307 响应 body 为空）。SEO 平台验证优先选**文件验证**或**CNAME 验证**，最稳。
+
+### Docker 部署常见坑
+
+- **构建超时（5min 硬上限）**：服务器 2 核 4G 限制，必须命中缓存层。`Dockerfile.web` 不可加 `RUN find / -delete` 等破坏缓存命令。
+- **canonical URL 指向 localhost**：默认 `Dockerfile.web` 里 `NEXT_PUBLIC_SITE_URL` 的 `ARG` 默认值是 `http://localhost:3000`，如果 `docker-compose.yml` 的 `web.build.args` 没显式传，会盖掉 `.env` 里的值。**必须**在 `docker-compose.yml` 的 `web.build.args` 里显式传：
+
+  ```yaml
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://www.bainboiler.com}
+        NEXT_PUBLIC_SANITY_PROJECT_ID: ${NEXT_PUBLIC_SANITY_PROJECT_ID}
+        NEXT_PUBLIC_SANITY_DATASET: ${NEXT_PUBLIC_SANITY_DATASET:-production}
+        NEXT_PUBLIC_SANITY_API_VERSION: ${NEXT_PUBLIC_SANITY_API_VERSION:-2025-01-01}
+  ```
+
+  不传会导致 `canonical` / `og:url` / `<html lang>` 等 SEO 关键字段全部指向本地。
+- **磁盘空间**：Docker 构建缓存会膨胀到 30+GB，**定期 `docker builder prune -af`** 释放。
+- **Trae IDE 吃内存**：构建时建议关闭 IDE，否则 Docker 构建可能 OOM kill。
